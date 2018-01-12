@@ -1,0 +1,11 @@
+.home-container {
+    position: absolute;
+    top: 36px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: auto;
+    background: #0066CC url(../../assets/images/bgmore.png) 0 0;
+    background-position: center top;
+    background-attachment: fixed;
+}

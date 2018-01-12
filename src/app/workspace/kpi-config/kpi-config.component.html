@@ -1,0 +1,136 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline" #conditionForm="ngForm">
+
+                <div class="ui-g-10">
+                    <button pButton type="button" class="ui-button-secondary" icon="fa-plus-circle" i18n-label label="添加" (click)="add()"></button>
+                    <input #gb type="text" pInputText size="50" placeholder="Global Filter">
+                </div>
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable  [value]="kpiConfigDataTable" [lazy]="false" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" resizableColumns="true"
+                columnResizeMode="expand"  [rowsPerPageOptions]="[15,20,25,30,40,50]" [globalFilter]="gb" #dt>
+                <p-header><span i18n>总数</span>:{{totalRecords}}</p-header>
+                <p-column  [style]="{'width':'150px'}" field="operation" i18n-header header="操作">
+                    <ng-template let-kpiConfigData="rowData" pTemplate="body">
+                        &nbsp;
+                        <button pButton type="button" class="ui-button-info" (click)="edit(kpiConfigData)" icon="fa-edit" i18n-label label="编辑"></button>                        &nbsp;&nbsp;
+                        <button pButton type="button" class="ui-button-danger" (click)="confirmDelete(kpiConfigData)" icon="fa-minus-circle" i18n-label
+                            label="删除"></button>
+                    </ng-template>
+                </p-column>
+                <p-column field="kpi_ne_type" [style]="{'width':'80px'}" i18n-header header="网元类型"></p-column>
+                <p-column field="kpi_category" [style]="{'width':'150px'}" i18n-header header="指标类型"></p-column>
+                <p-column field="kpi_name" [style]="{'width':'200px'}" i18n-header header="指标名称"></p-column>
+
+                <p-column field="kpi_query_script" [style]="{'width':'300px'}" i18n-header header="提取公式"></p-column>
+
+                <p-column field="kpi_unit" [style]="{'width':'80px'}" i18n-header header="值类型"></p-column>
+                <p-column field="monitor_time_string" [style]="{'width':'80px'}" i18n-header header="监控时间段"></p-column>
+                <p-column field="compared_method" i18n-header header="比较符号"></p-column>
+                <p-column field="request_sample" i18n-header header="样本基数"></p-column>
+                <p-column field="threshold" i18n-header header="门限值"></p-column>
+                <p-column field="alarm_level" i18n-header header="告警等级"></p-column>
+                <!--<p-footer><span i18n></span></p-footer>-->
+            </p-dataTable>
+        </div>
+    </div>
+</div>
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog #cd header="Confirmation" icon="fa fa-question-circle" width="425">
+    <p-footer>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+        <button type="button" pButton icon="fa-check" i18n-label label="确定" (click)="cd.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<p-dialog i18n-header header="添加/编辑" [(visible)]="display" modal=true width="800">
+    <div class="ui-g-12">
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">KPI名称</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入KPI名称" pInputText [(ngModel)]="kpiNameInDialog" size="20" />
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">KPI代码</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入KPI代码" pInputText [(ngModel)]="kpiCodeInDialog" size="20" />
+            </div>
+        </div>
+        <!--<div class="ui-grid-row">
+            <div class="ui-g-3"><label i18n class="custom-label">KPI代码</label></div>
+            <div class="ui-g-9">
+                <input type="text" i18n-placeholder placeholder="请输入KPI代码" pInputText [(ngModel)]="kpiCodeInDialog" size="20" />
+            </div>
+        </div>-->
+        <!--<div class="ui-grid-row">
+            <div class="ui-g-3"><label i18n class="custom-label">KPI类型</label></div>
+            <div class="ui-g-9">
+                <p-dropdown [options]="outPutFields" [style]="{'width':'50%'}" [(ngModel)]="outPutFieldSelected" editable="editable" filter="filter"></p-dropdown>
+            </div>
+        </div>-->
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">网元类型</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="neTypeList" [style]="{'width':'100%'}" [(ngModel)]="selectNeType" editable="editable" filter="filter"></p-dropdown>
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">KPI业务分类</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="kpiCategorys" [style]="{'width':'100%'}" [(ngModel)]="kpiCategorySelected" editable="editable" filter="filter"></p-dropdown>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">KPI值类型</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="kpiUnits" [style]="{'width':'100%'}" [(ngModel)]="kpiUnitSelected" filter="filter"></p-dropdown>
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">比较符号</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="comparedMethods" [style]="{'width':'100%'}" [(ngModel)]="comparedMethodSelected" editable="editable"
+                    filter="filter"></p-dropdown>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">样本基数</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入样本基数" pInputText [(ngModel)]="requestSampleInDialog" />
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">门限值</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入门限值" pInputText [(ngModel)]="thresholdInDialog" />
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">告警等级</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="alarmLevels" [style]="{'width':'100%'}" [(ngModel)]="selectAlarmLevel"  filter="filter"></p-dropdown>
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">是否启用</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="kpiEnables" [style]="{'width':'100%'}" [(ngModel)]="kpiEnableSelected" filter="filter"></p-dropdown>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">监控时段</label></div>
+            <div class="ui-g-9">
+                <p-calendar [(ngModel)]="monitorTimeStart" [timeOnly]="true" dateFormat="HH:mm"></p-calendar>
+                -
+                <p-calendar [(ngModel)]="monitorTimeEnd" [timeOnly]="true" dateFormat="HH:mm"></p-calendar>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">KPI提取公式</label></div>
+            <div class="ui-g-9">
+                <textarea rows="5" cols="50" [(ngModel)]="kpiQueryScriptInDialog" pInputTextarea></textarea>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button" pButton icon="fa-close" (click)="display=false" i18n-label label="关闭"></button>
+            <button type="button" pButton icon="fa-check" (click)="display=false" (click)="commitNewData()" i18n-label label="保存"></button>
+        </div>
+    </p-footer>
+</p-dialog>

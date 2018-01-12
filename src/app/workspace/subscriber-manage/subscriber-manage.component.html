@@ -1,0 +1,113 @@
+<div class="ui-g-12">
+    <div class="ui-g-5">
+        <div class="ui-g-12">
+        <p-accordion >
+            <p-accordionTab i18n-header header="选择指令" [selected]="true">
+                <p-dataTable selectionMode="single" [value]="commandList" [(selection)]="selectedCommand" [rows]="15" [paginator]="true" [pageLinks]="5" #dt [rowsPerPageOptions]="[15,20,30]">
+                    <p-column [style]="{'width':'38px'}" selectionMode="single"></p-column>
+                    <p-column [style]="{'width':'120px'}" field="category" i18n-header header="命令类型" [filter]="true" filterMatchMode="equals">
+                        <ng-template pTemplate="filter" let-row>
+                            <p-dropdown [options]="cmdTypeList" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,row.field,row.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="name" i18n-header header="指令名称" [filter]="true" filterMatchMode="contains"></p-column>
+                    <p-column field="command" i18n-header header="指令内容" [filter]="true" filterMatchMode="contains"></p-column>
+
+                </p-dataTable>
+            </p-accordionTab>
+        </p-accordion>
+        </div>
+        <div class="ui-g-12" style="text-align:center">
+            <button pButton type="button" (click)="commitExec()" i18n-label label="提交执行" icon="fa-check" class="ui-button-success"></button>
+        </div>
+    </div>
+    <div class="ui-g-7">
+        <p-panel i18n-header header="执行结果">
+            <div style="height: 450px">
+                <p-dataTable [value]="checkResultList" [totalRecords]="totalSize" [rows]="12" [lazy]="true" (onLazyLoad)="getCheckSubtoolResult($event)" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[12,20,30,40]">
+                    <p-header>
+                        <p-dropdown [options]="resultTypeList"  [style]="{'width':'150px'}" [(ngModel)]="status"></p-dropdown>
+                        <input type="text" pInputText  [(ngModel)]="paramStr"/>
+                        <button pButton type="button" (click)="searchResultList()" i18n-label label="查询"  icon="fa-search" class="ui-button-secondary"></button>
+                    </p-header>
+                    <p-column field="createTime" i18n-header header="执行时间"></p-column>
+                    <p-column field="userNumber" i18n-header header="用户号码"></p-column>
+                    <p-column field="checkName" i18n-header header="检查项"></p-column>
+                    <p-column field="createName" i18n-header header="操作人"></p-column>
+                    <p-column field="exeResults" i18n-header header="结果">
+                        <ng-template pTemplate="item" let-item="rowData">
+                            <i *ngIf="item.exeResults == '0'" class="fa fa-check" [style.color]="'green'"></i>
+                            <i *ngIf="item.exeResults == '1'" class="fa fa-remove" [style.color]="'red'"></i>
+                            <button pButton style="float:right" type="button" (click)="resultClick(item)" i18n-label label="显示" icon="fa-edit" class="ui-button-{{statusColor[item.exeResults]}}"></button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+
+<p-dialog header="{{selectedCommand ?.name}}" [(visible)]="editExecCommandDisplay" modal="modal" width="600" height="500" [responsive]="true">
+    <div *ngIf = "!commandTemplateDisplay">
+        <div class="ui-grid-12">
+            <div class="ui-grid-row" style="text-align:center">
+                <div class="ui-g-12">
+                    <p-radioButton name="groupname" value="0" i18n-label label="单用户操作" [(ngModel)]="radioValue"></p-radioButton>
+                    <p-radioButton name="groupname" value="1" i18n-label label="多用户操作" [(ngModel)]="radioValue"></p-radioButton>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="radioValue == '0'"><div class="ui-grid-12"  *ngFor="let item of modelKeySet">
+            <div class="ui-grid-row">
+                <div class="ui-g-3 custom-label">
+                    {{item.key}}
+                </div>
+                <div class="ui-g-9">
+                    <input id="input" type="text" size="50" pInputText [(ngModel)]="item.value">
+                </div>
+            </div>
+        </div></div>
+        <div *ngIf="radioValue == '1'" class="ui-g-12" style="text-align:center">
+            <div class="ui-grid-row" style="width:210px;text-align:center;margin:0 auto;">
+                <button type="button" style="width:105px;float:left" class="ui-button-secondary" icon="fa-hand-o-down" (click)="exportTemplate()" pButton i18n-label label="模板下载"></button>
+                <p-fileUpload #fubauto mode="basic" name="file" url="{{apiUrl}}" accept=".xls"
+                maxFileSize="1000000" (onUpload)="onBasicUploadAuto($event)" auto="true"
+                i18n-chooseLabel chooseLabel="参数导入" style="float:left;"></p-fileUpload>
+            </div>
+            <div class="ui-grid-row" style="width:210px;text-align:center;margin:0 auto;">
+                {{templateName}}
+            </div>
+        </div>
+        <div class="ui-g-12" style="text-align:center">
+            <button type="button" (click) = "execCommand()" style="width:200px" class="ui-button-success" pButton i18n-label label="执行"></button>
+        </div>
+        <div class="ui-grid-12">
+            <div class="ui-grid-row">
+                <div class="ui-g-3 custom-label" i18n>帮助信息</div>
+                <div class="ui-g-9">
+                    <textarea rows="10" cols="50" pInputTextarea [(ngModel)]="helpInfo">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="commandTemplateDisplay" style="text-align:center">
+        <div  class="ui-g-12"
+            style="width:570px;height:400px;text-align:center;margin:0 auto;overflow-y:scroll;overflow-x:scroll">
+            <p *ngFor="let item of commandTemplateText">{{item}}</p>
+        </div>
+        <div class="ui-g-12">
+            <button type="button" style="width:200px" class="ui-button-success" pButton (click)="commandTemplateDisplay=false" i18n-label label="修改参数"></button>
+            <button type="button" (click) = "sendCommand()" style="width:200px" class="ui-button-danger" pButton i18n-label label="确认执行"></button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog i18n-header header="查看内容" [(visible)]="errorMessageDisplay" modal="modal" width="600" height="500" [responsive]="true">
+    <div style="width:100%;height:430px;overflow:scroll;">
+        <pre>{{errorMessage}}</pre>
+    </div>
+</p-dialog>
+
+<p-growl [(value)]="msgs"></p-growl>

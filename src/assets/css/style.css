@@ -1,0 +1,613 @@
+html {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    background-position: center top;
+    background-attachment: fixed;
+}
+
+body * {
+    font-family: "Microsoft Yahei", Verdana, Arial, Tahoma;
+    font-size: 14px;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px 0px 10px;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.content-pad {
+    margin: 0px 50px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: " ";
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.pull-right {
+    float: right !important;
+}
+
+.pull-left {
+    float: left !important;
+}
+
+.form-inline>* {
+    margin: 5px 3px;
+}
+
+.form-inline>input,
+.form-inline>button {
+    vertical-align: middle;
+}
+
+
+/*顶部导航列表*/
+
+
+/*
+ * @media screen and (max-width: 767px)
+ * @media (min-width: 768px)
+ * @media (min-width: 768px) and (max-width: 991px)
+ * @media (min-width: 768px) and (max-width: 991px)
+ * @media (min-width: 768px) and (max-width: 991px)
+ * @media (min-width: 992px) and (max-width: 1199px) */
+
+#topNavListWrap {
+    height: 48px;
+    position: relative;
+    overflow: hidden;
+}
+
+#topNavList {
+    position: absolute;
+    right: 60px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+#topNavListWrap.active {
+    overflow: visible;
+}
+
+#topNavListWrap.active #topNavList {
+    background: #5bc0de;
+    border: 1px solid #46b8da;
+    box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, .2);
+    top: 48px;
+    right: 0px;
+    /*width: 100%;*/
+}
+
+#topNavListWrap.active #navList a.active {
+    color: yellow;
+    border-bottom: none;
+}
+
+#topNavListWrap.active #navList li:after {
+    position: absolute;
+    display: inline-block;
+    height: 15px;
+    width: 0px;
+    content: "";
+    border-left: 1px solid rgb(151, 215, 244);
+    border-right: 1px solid #46A3DB;
+    color: #aaa;
+    top: 17px;
+}
+
+#navList {
+    margin: 0px;
+    padding: 0px 8px;
+}
+
+#overFlowBtn {
+    width: 13px;
+    margin-top: 7px;
+    float: right;
+    text-align: center;
+    display: none;
+}
+
+
+/*表格 + 弹窗*/
+
+/* .ui-widget {
+    font-family: "Microsoft Yahei", Verdana, Arial, Tahoma;
+    font-size: 1em;
+} */
+.ui-widget.ui-datepicker {
+  font-size: 1em;
+  width: 280px;
+}
+
+
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.ui-datatable.ui-widget {
+    color: #222;
+    font-size: 14px;
+}
+
+.ui-widget .btn-sm,
+.ui-widget .btn-xs {
+    font-size: 12px;
+}
+
+.ui-dialog.ui-widget .ui-dialog-titlebar {
+    padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    padding: 3px 5px;
+    text-align: right;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: 3px;
+    float: none;
+}
+
+body .ui-datatable .ui-datatable-data>tr>td {
+    padding: 3px 8px;
+}
+
+.ui-widget-header,
+.ui-datatable th.ui-state-default {
+    background: #f6f6f6 0 0 repeat-x;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f6f6f6), color-stop(100%, #EDEDED));
+    background: -webkit-linear-gradient(top, #f6f6f6 0%, #EDEDED 100%);
+    background: linear-gradient(to bottom, #f6f6f6 0%, #EDEDED 100%);
+}
+
+.ui-datatable th.ui-state-active {
+    color: #222;
+}
+
+.ui-widget-overlay {
+    background: #444;
+}
+
+.ui-datatable tbody {
+    font-size: 12px;
+}
+
+.ui-cell-data {
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+.ui-datatable-header.ui-widget-header {
+    padding: 5px 10px;
+}
+
+.ui-datatable-data>tr>td:hover {
+    overflow: visible;
+}
+
+.ui-datatable-data>tr>td:hover .ui-cell-data {
+    overflow: visible;
+    white-space: normal;
+    text-overflow: initial;
+    word-break: break-all;
+}
+
+.ui-datatable-data>tr:hover td {
+    background: #D7DFEC;
+    position: relative;
+}
+
+.page_info {
+    color: #666;
+    font-style: italic;
+}
+
+
+/*拓扑图 */
+
+.node circle {
+    fill: yellow;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+.node {
+    font: 10px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+
+/*自定义 样式*/
+
+.table-layout {
+    display: table;
+    width: 100%;
+    margin: 10px 0px;
+    overflow: hidden;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.input-wrap {
+    padding-right: 18px;
+}
+
+.input-wrap .ui-inputtext {
+    width: 100%;
+}
+
+footer {
+    color: #999;
+    text-align: center;
+    margin: 20px 0px 5px;
+    font-size: 12px;
+}
+
+
+/*重定义 theme*/
+
+.ui-corner-all {
+    border-radius: 2px;
+}
+
+.ui-inputtext {
+    border: 1px solid #D8D8D8;
+    padding: 4px 8px;
+}
+
+.ui-password-panel {
+    background-color: #f6f6f6;
+    border-color: #f6f6f6;
+    background-image: -webkit-linear-gradient(#f6f6f6, #f1f1f1);
+    background-image: linear-gradient(#f6f6f6, #f1f1f1);
+    box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, .1);
+}
+
+.ui-password-info {
+    color: #333;
+}
+
+.ui-chkbox .ui-chkbox-box {
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+}
+
+.ui-button.ui-button-warning.ui-state-default {
+    border-color: #f0ad4e;
+    background: #f0ad4e;
+    background: linear-gradient(#f0ad4e, #E5A140);
+    background: -webkit-linear-gradient(#f0ad4e, #E5A140);
+}
+
+.ui-button.ui-button-info.ui-state-default:hover {
+    background-color: #5bc0de;
+    border-color: #5bc0de;
+}
+
+.ui-button.ui-button-danger.ui-state-default:hover {
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+.ui-button.ui-button-success.ui-state-default:hover {
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.ui-button.ui-button-secondary.ui-state-default:hover {
+    background-color: #fff;
+    border-color: #ccc;
+    color: #333;
+}
+
+.ui-cell-data .ui-button * {
+    font-size: 12px;
+}
+
+.ui-cell-data .ui-button .ui-button-icon-left {
+    left: 3px;
+}
+
+.ui-cell-data .ui-button-text {
+    padding: 1px 3px 1px 20px;
+}
+
+.ui-grid-row {
+    /*padding: 4px;*/
+}
+
+.custom-label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+}
+
+
+/**
+*大图标
+*/
+
+.home-nav-item ul li {
+    min-width: 180px;
+    line-height: 30px;
+    margin-bottom: 2px;
+    list-style-type: none;
+}
+
+.home-nav-item ul li i {
+    font-size: 18px;
+    line-height: 32px;
+    top: 4px;
+}
+
+.home-nav-item ul li .title {
+    font-size: 14px;
+    line-height: 32px;
+    top: 1px;
+}
+
+.home-nav-item ul li a {
+    display: block;
+    height: 100%;
+    padding: 0 10px;
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.home-nav-item ul li a.disable {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.home-nav-item ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.home-nav-item .home-nav-item-title {
+    color: #feb100;
+    padding: 10px 5px;
+    /*padding-left: 5px;*/
+    /*border-left: 5px solid rgba(255,255,255,0.5) ;*/
+    background-color: rgba(0, 0, 0, .1);
+    margin: 0px 0px;
+}
+
+
+/**dashboard**/
+
+.n-main-home h1,
+.n-main-home h2,
+.n-main-home h3,
+.n-main-home h4,
+.n-main-home h5 {
+    color: #f5f5f5;
+    font-weight: normal;
+}
+
+.n-main-home {
+    padding-top: 20px;
+}
+
+.n-main-home h4 {
+    font-size: 18px;
+    margin: 8px 0px;
+}
+
+.n-main-home .thumbnail {
+    background-color: transparent;
+    border: 0px solid #ddd;
+}
+
+.n-main-home .thumbnail p {
+    color: #f5f5f5;
+}
+
+.thumbnail.opacity {
+    opacity: 0.5;
+}
+
+.btn.n-icon {
+    border-radius: 24px;
+    display: inline-block;
+}
+
+.n-icon {
+    width: 96px;
+    height: 96px;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0 auto;
+    background-color: #b51c44;
+    border: 1px rgba(255, 255, 255, 0) solid;
+    border-radius: 24px;
+    color: #f5f5f5;
+    border: 0px #b51c44 solid;
+    -webkit-box-shadow: inset 0px 0px 1px #fff;
+    -moz-box-shadow: inset 0px 0px 1px #fff;
+    box-shadow: inset 0px 0px 1px #fff;
+    /*内发光效果*/
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    -webkit-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.n-icon:hover {
+    border: 1px rgba(255, 255, 255, 0.25) solid;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .5)), to(rgba(255, 255, 255, 0)));
+    background-image: -webkit-linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+    background-image: -moz-linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+    background-image: -ms-linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+    background-image: -o-linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    -webkit-box-shadow: 1px 2px 5px #000000;
+    -moz-box-shadow: 1px 2px 5px #000000;
+}
+
+.n-icon:active {
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    -webkit-box-shadow: 0px 0px 1px #000000;
+    -moz-box-shadow: 0px 0px 1px #000000;
+}
+
+.n-icon .badge {
+    font-size: 24px;
+    position: absolute;
+    right: 30px;
+    background-color: #ff0000;
+}
+
+.n-icon i {
+    line-height: 96px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 3em;
+    color: #f5f5f5;
+    top: 0;
+    left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.n-icon:hover i {
+    color: #f5f5f5;
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    -o-transform: scale(0.8);
+    transform: scale(0.8);
+}
+
+.n-backicon {
+    padding: 0;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 1);
+    font-size: 18px;
+    line-height: 30px;
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 1);
+}
+
+@media (max-width: 767px) {
+    .n-icon {
+        width: 64px;
+        height: 64px;
+    }
+    .n-icon i {
+        line-height: 64px;
+        font-size: 2.5em;
+    }
+}
+
+.n-icon-32 {
+    border-radius: 12px !important;
+    width: 32px;
+    height: 32px;
+}
+
+.n-icon-32 i {
+    line-height: 32px;
+    font-size: 1.5em;
+}
+
+.n-icon-color1 {
+    background-color: #e88a05;
+}
+
+.n-icon-color2 {
+    background-color: #0093a8;
+}
+
+.n-icon-color3 {
+    background-color: #ce4b27;
+}
+
+.n-icon-color4 {
+    background-color: #009600;
+}
+
+.n-icon-color5 {
+    background-color: #a300aa;
+}
+
+.n-icon-color6 {
+    background-color: #5b3ab6;
+}
+
+.n-icon-color7 {
+    background-color: #3498db;
+}
+
+.n-icon-color8 {
+    background-color: #ff7f50;
+}
+
+.n-icon-color9 {
+    background-color: #feb100;
+}
+
+.n-icon-color10 {
+    background-color: #45a1d6;
+}
+
+.n-icon .badge {
+    font-size: 24px;
+    position: absolute;
+    right: 30px;
+    background-color: #ff0000;
+}

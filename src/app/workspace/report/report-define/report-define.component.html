@@ -1,0 +1,157 @@
+<div class='dhss-container'>
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <form class="form-inline" #conditionForm="ngForm">
+        <div class="ui-g-10">
+          <button pButton type="button" class="ui-button-secondary" icon="fa-plus-circle" i18n-label label="新增模板" (click)="addTemplate()"></button>
+        </div>
+      </form>
+    </div>
+    <div class="ui-g-12">
+      <p-header></p-header>
+      <p-dataTable [value]="templateDataTable" [lazy]="true" (onLazyLoad)="loadLazy($event)" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[15,20,25,30,40,50]" [totalRecords]="totalRecords">
+
+        <p-column field="templateName" i18n-header header="模板名称"></p-column>
+        <p-column field="templateDescription" i18n-header header="模板描述"></p-column>
+        <p-column field="createTime" i18n-header header="创建时间"></p-column>
+        <!--<p-column field="creator" i18n-header header="创建人"></p-column>-->
+        <p-column field="operation" i18n-header header="操作">
+          <ng-template let-templateRowData="rowData" pTemplate="body">
+            <button pButton type="button" class="ui-button-info" (click)="edit(templateRowData.templetId,templateRowData.templateName,templateRowData.templateDescription)"
+              icon="fa-edit" i18n-label label="编辑"></button>
+            <button pButton type="button" class="ui-button-danger" (click)="delete(templateRowData.templetId)" icon="fa-remove" i18n-label label="删除"></button>
+            <button pButton type="button" class="ui-button-info" (click)="clone(templateRowData.templetId)" icon="fa-edit" i18n-label label="克隆"></button>
+            <button pButton type="button" class="ui-button-success" (click)="templateText(templateRowData.templetId)" icon="fa-file" i18n-label label="模板文字"></button>
+          </ng-template>
+        </p-column>
+        <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+      </p-dataTable>
+    </div>
+  </div>
+</div>
+
+<p-dialog i18n-header header="模板文字" [(visible)]="templateTextDisplay" modal=true>
+  <div class="ui-g-12">
+
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">模板大标题</label></div>
+      <div class="ui-g-8">
+        <input type="text" i18n-placeholder placeholder="请输入模板大标题" pInputText [(ngModel)]="templetDesc.modalTitle" size="20" />
+      </div>
+    </div>
+    <!--div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">封二类型</label></div>
+      <div class="ui-g-8">
+        <p-radioButton name="text" value="text" i18n-label label="图片版" [(ngModel)]="selectedValue"></p-radioButton>
+        <p-radioButton name="picture" value="picture" i18n-label label="文字版" [(ngModel)]="selectedValue"></p-radioButton>
+      </div>
+    </div-->
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">全网总体概况信息概述</label></div>
+      <div class="ui-g-8">
+        <textarea rows="5" cols="50" [(ngModel)]="templetDesc.allNeContent" pInputTextarea></textarea>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">历史告警分类汇总概述</label></div>
+      <div class="ui-g-8">
+        <textarea rows="5" cols="50" [(ngModel)]="templetDesc.hisContent" pInputTextarea></textarea>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="templateTextDisplay=false" (click)="closeTemplateText()" i18n-label label="关闭"></button>
+      <button type="button" pButton icon="fa-check" (click)="templateTextDisplay=false" (click)="saveTemplateText()" i18n-label
+        label="保存"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+
+<p-dialog i18n-header header="新增/编辑模板" [(visible)]="addOrEditTemplateDisplay" modal=true>
+  <div class="ui-g-12">
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">模板名称</label></div>
+      <div class="ui-g-8">
+        <input type="text" i18n-placeholder placeholder="请输入模板名称" pInputText [(ngModel)]="templateNameInDialog" size="20" />
+        <span [innerHTML]="showModelNameError"></span>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">模板描述</label></div>
+      <div class="ui-g-8">
+        <textarea rows="5" cols="50" [(ngModel)]="templateDescInDialog" pInputTextarea></textarea>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">新增目录/指标</label></div>
+      <div class="ui-g-8">
+        <!--textarea rows="5" cols="50" [(ngModel)]="addContentOrKpi" pInputTextarea></textarea-->
+        <p-tree [(value)]="treeNodeList" selectionMode="single" [(selection)]="selectedNode"
+            (onNodeSelect)="nodeSelect($event)" (onNodeCollapse)="onNodeCollapse($event)" [style]="{'width':'100%','height':'200px','color':'orange'}" [contextMenu]="cm">
+              <ng-template let-node  pTemplate="default">
+                  <span *ngIf="!node.edit" style="color: black">{{node.label}}</span>
+                  <span *ngIf="node.edit">
+                    <input (keyup)="keyUpUpdateNodeInput($event,node)" [(ngModel)]="node.label" type="text" >
+                    <button (click)="clickUpdateNode(node)"  pButton type="button" label="OK"></button>
+                  </span>
+              </ng-template>
+        </p-tree>
+      </div>
+    </div>
+    <!--div class="ui-grid-row">
+      <div class="ui-g-4"><label i18n class="custom-label">包含详细的网元快照</label></div>
+      <div class="ui-g-8">
+        <textarea rows="5" cols="50" [(ngModel)]="neSnapshot" pInputTextarea></textarea>
+      </div>
+    </div-->
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="addOrEditTemplateDisplay=false" i18n-label label="关闭"></button>
+      <button type="button" pButton icon="fa-check" (click)="addOrEditTemplateDisplay=false" (click)="saveTemplateChange()" i18n-label
+        label="保存"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+<p-dialog i18n-header header="编辑" [(visible)]="editMenuDisplay" modal="modal" width="500" responsive="true">
+      <div class="ui-grid ui-grid-responsive ui-fluid">
+          <div class="form-wrap">
+              <label i18n class="form-label">目录描述</label>
+              <div>
+                  <textarea rows="5" cols="50" [(ngModel)]="tmpSelectedNode.data" pInputTextarea></textarea>
+              </div>
+          </div>
+          <div class="form-wrap">
+              <label i18n class="form-label">与网元相关</label>
+              <div>
+                  <p-checkbox [(ngModel)]="checked" binary="true"></p-checkbox>
+              </div>
+          </div>
+          <div class="form-wrap" *ngIf="checked">
+              <label i18n class="form-label">指标类型</label>
+              <div>
+                <p-radioButton name="folderRadio" [(disabled)]="!checked" value="1" i18n-label label="全网汇聚指标" [(ngModel)]="tmpSelectedNode.folderNeTp"></p-radioButton>
+                <p-radioButton name="folderRadio" [(disabled)]="!checked" value="2" i18n-label label="单网元多指标" [(ngModel)]="tmpSelectedNode.folderNeTp"></p-radioButton>
+                <p-radioButton name="folderRadio" [(disabled)]="!checked" value="3" i18n-label label="多网元单指标" [(ngModel)]="tmpSelectedNode.folderNeTp"></p-radioButton>
+              </div>
+          </div>
+          <div class="form-wrap" *ngIf="checked">
+              <label i18n class="form-label">指标列表</label>
+              <div>
+                <p-multiSelect i18n-defaultLabel defaultLabel="指标列表" appendTo="body" [options]="kpisOptions" [(ngModel)]="tmpKpiStr">
+                </p-multiSelect>
+              </div>
+          </div>
+        </div>
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-widget-content">
+                <button type="button" pButton icon="fa-check" (click)="editMenuProperties()" i18n-label label="保存"></button>
+                <button type="button" pButton icon="fa-close" (click)="closeEditProperties()" i18n-label label="取消"></button>
+            </div>
+        </p-footer>
+</p-dialog>
+<p-confirmDialog i18n-header header="删除" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+<p-growl [value]="msgs"></p-growl>

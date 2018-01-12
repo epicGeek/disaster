@@ -1,0 +1,49 @@
+<div class='ices-one-click-access dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form  #conditionForm="ngForm">
+                <div class="ui-grid-row">
+                    
+                    <!--<div class="ui-g-2">-->
+                        <p-dropdown name="dropdownModel.location" [style]="{'width':'150px'}" [options]="dropdownModel.location" (onChange)="changeDropdown('location')" [(ngModel)]="kpiParams.location"></p-dropdown>
+                    <!--</div>
+                    <div class="ui-g-2">-->
+                        <p-dropdown name="dropdownModel.neTypes" [style]="{'width':'150px'}" [options]="dropdownModel.neTypes" (onChange)="changeDropdown('neType')" [(ngModel)]="kpiParams.neType"></p-dropdown>
+                    <!--</div>
+                    <div class="ui-g-2">-->
+                        <p-dropdown name="dropdownModel.neNames" [style]="{'width':'150px'}" [options]="dropdownModel.neNames" (onChange)="changeDropdown('ne')" [(ngModel)]="kpiParams.neName"></p-dropdown>
+                    <!--</div>
+                    <div class="ui-g-2">-->
+                        <p-dropdown name="dropdownModel.kpiNames" filter="filter" [style]="{'width':'150px'}" [options]="dropdownModel.kpiNames" [(ngModel)]="kpiParams.kpiCode">
+                            <ng-template let-item pTemplate="item">
+                                <div class="text-overflow">{{item.label}}</div>
+                            </ng-template>
+                        </p-dropdown>
+                    <!--</div>
+                    <div class="ui-g-2">-->
+                        <p-calendar name="start" [(ngModel)]="kpiParams.startDate" showTime="showTime" hourFormat="24" dateFormat="yy-mm-dd" [showIcon]="true" appendTo="body" readonlyInput="true" ></p-calendar>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <!--</div>
+                    <div class="ui-g-2">-->
+                        <p-calendar name="end" [(ngModel)]="kpiParams.endDate" showTime="showTime" hourFormat="24" dateFormat="yy-mm-dd" [showIcon]="true" appendTo="body" readonlyInput="true" ></p-calendar>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <!--</div>-->
+                        <p-radioButton *ngIf="showMoreGrains" name="group1" value="default" i18n-label label="Default" [(ngModel)]="grainBtn"></p-radioButton>
+                        <p-radioButton *ngIf="showMoreGrains" name="group1" value="day" i18n-label label="Day" [(ngModel)]="grainBtn"></p-radioButton>
+                        <p-radioButton *ngIf="showMoreGrains" name="group1" value="week" i18n-label label="Week" [(ngModel)]="grainBtn"></p-radioButton>
+                        <p-radioButton *ngIf="showMoreGrains" name="group1" value="month" i18n-label label="Month" [(ngModel)]="grainBtn"></p-radioButton>
+                        <button class="ui-button-info" (click)="findCharData()" icon="fa-search" pButton type="button" i18n-label label="查询"></button>
+                        <button class="ui-button-secondary" icon="fa-refresh" (click)="clearData()" pButton type="button" i18n-label label="重置"></button>
+                        
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="ui-g">
+       <div class="ui-g-12" id="text" >
+            <!--<p-chart type="bar" [data]="dataset" width="100%" height="30"></p-chart>-->
+            <!--<canvas baseChart height="100" [datasets]="barChartData" [labels]="barChartLabels" [chartType]="barChartType"></canvas>-->
+            <chart [options]="options" width = '1000px'></chart>
+        </div>
+    </div>
+</div>
+<p-growl [value]="msgs"></p-growl>

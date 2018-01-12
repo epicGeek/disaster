@@ -1,0 +1,83 @@
+<div class='dhss-container'>
+
+
+
+
+
+
+    <!--at develop branch!-->
+    <div class="ui-grid-row">
+        <div class="ui-g-12">
+            <!--<input type="text" size="25" i18n-placeholder placeholder="请输入Subscriber号码" name="userNumber" pInputText [(ngModel)]="userNumber"/>-->
+            <p-dropdown name="resultTypes" [style]="{'width':'150px'}" [options]="resultTypes" [(ngModel)]="resultTypeSelected" filter="filter"></p-dropdown>
+            <p-dropdown name="pgwNames" [style]="{'width':'150px'}" [options]="pgwNames" [(ngModel)]="pgwNameSelected" filter="filter"
+                (onChange)="onChange()"></p-dropdown>
+            <p-dropdown name="instanceNames" [style]="{'width':'150px'}" [options]="instanceNames" [(ngModel)]="instanceNameSelected"
+                filter="filter"></p-dropdown>
+
+            <p-calendar [(ngModel)]="startDate" name="startDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+                hourFormat="24" [minDate]="maxDateValue"></p-calendar>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p-calendar [(ngModel)]="endDate" name="endDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+                hourFormat="24"></p-calendar>
+        </div>
+    </div>
+
+    <div class="ui-grid-row">
+        <div class="ui-g-4">
+            <p-chips name="pgwQueryString" [(ngModel)]="pgwQueryString" i18n-placeholder placeholder="请输入IMSI/MSISDN/Identifier并键入回车"
+                [style]="{'width': '400px'}" [inputStyle]="{'width': '400px'}"></p-chips>
+
+        </div>
+
+
+        <div class="ui-g-8">
+            <input *ngIf="isSearchLog" [(ngModel)]="searchLogKeyWord" i18n-placeholder placeholder="请输入关键字" [style]="{'width': '400px'}"
+            pInputText />
+            <button pButton type="button" icon="fa-search" i18n-label label="查询" (click)="query()"></button>
+            <button pButton type="button" class="ui-button-success" icon="fa-file-excel-o" i18n-label label="导出" (click)="export()"></button>
+            <p-checkbox [(ngModel)]="isExportLog" binary="true"></p-checkbox><span i18n>导出详情</span>
+        </div>
+    </div>
+    <!-- <div class="ui-grid-row">
+        <div class="ui-g-4">
+            <input type = {{isSearchLog}} [(ngModel)]="searchLogKeyWord" i18n-placeholder placeholder="请输入关键字" [style]="{'width': '400px'}"  pInputText />
+        </div>
+    </div> -->
+    <div class="ui-g-12">
+        <p-dataTable [value]="pgwLogDataTable" resizableColumns="true" columnResizeMode="expand" [lazy]="true" [rows]="15" [paginator]="true"
+            [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="getPgwLogDataTable($event)">
+
+            <p-column field="request_id" i18n-header header="请求ID"></p-column>
+            <p-column field="pgw_name" i18n-header header="PGW名称"></p-column>
+            <p-column field="instance_name" i18n-header header="实例名称"></p-column>
+            <!--<p-column field="user_name" i18n-header header="执行用户"></p-column>-->
+
+            <p-column field="execution_content" i18n-header header="执行内容"></p-column>
+            <p-column field="user_number" i18n-header header="Identifier"></p-column>
+            <p-column field="imsi" i18n-header header="IMSI"></p-column>
+            <p-column field="msisdn" i18n-header header="MSISDN">
+                <ng-template pTemplate="default" let-msisdn="rowData">
+                    {{msisdn.msisdn=="0"?"":msisdn.msisdn}}
+                </ng-template>
+            </p-column>
+            <p-column field="operation" i18n-header header="操作"></p-column>
+            <p-column field="result_type" [style]="{'width':'70px'}" i18n-header header="执行结果"></p-column>
+            <p-column field="error_code" i18n-header header="错误代码"></p-column>
+            <p-column field="error_message" i18n-header header="错误内容"></p-column>
+            <p-column field="response_time" [style]="{'width':'140px'}" i18n-header header="执行时间"></p-column>
+            <p-column field="execution_time" i18n-header header="执行时长"></p-column>
+            <p-column field="query_detail" i18n-header header="查看详情">
+                <ng-template let-pgwDetailData="rowData" pTemplate="body">
+                    <button pButton type="button" (click)="testRowBtn(pgwDetailData.request_id)" icon="fa-search" (click)="showDialog()" i18n-label
+                        label="查看详情"></button>
+                </ng-template>
+            </p-column>
+            <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+        </p-dataTable>
+    </div>
+    <p-dialog i18n-header header="PGW日志详情" [(visible)]="display" width="800" modal=true>
+        <textarea rows="20" cols="100" [(ngModel)]="pgwXmlLog" pInputTextarea></textarea>
+    </p-dialog>
+</div>
+<p-growl [(value)]="msgs" life="10000"></p-growl>

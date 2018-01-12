@@ -1,0 +1,31 @@
+<div class='ices-login login-container'>
+    <div class="login-content">
+        <div class="logo"><img i18n-src src="../../assets/images/login_logo_big.png" /></div>
+        <div>{{ errorMessage }}</div>
+        <div>{{ todo }}</div>
+
+        <form>
+            <div class="table-layout">
+                <span class="icon table-cell"><i class="fa fa-user"></i></span>
+                <div class="input-wrap table-cell">
+                    <input pInputText type="text" [(ngModel)]="user.username" name="username" i18n-placeholder placeholder="请输入用户名">
+                </div>
+            </div>
+            <div class="table-layout">
+                <span class="icon table-cell"><i class="fa fa-lock"></i></span>
+                <div class="input-wrap table-cell">
+                    <input pInputText type="password" [(ngModel)]="user.password" name="password" i18n-placeholder placeholder="请输入密码" />
+                </div>
+            </div>
+
+            <div class="table-layout">
+                <!-- <p-checkbox class="table-cell text-left" i18n-label label="台湾之星用户" [(ngModel)]="user.isLdapUser" name="isLdapUser" binary="true" name="isLdapUser"></p-checkbox> -->
+                <div class="table-cell text-right" >
+                    <button pButton type="button" (click)="login()" class="ui-button-warning" i18n-label label="登录"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer>The system developed by Nokia</footer>
+</div>

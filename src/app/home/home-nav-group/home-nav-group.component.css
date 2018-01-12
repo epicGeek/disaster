@@ -1,0 +1,90 @@
+.home-nav-group ul li {
+    min-width: 180px;
+    line-height: 30px;
+    margin-bottom: 2px;
+    list-style-type: none;
+}
+
+.home-nav-group ul li i {
+    font-size: 18px;
+    line-height: 32px;
+    top: 4px;
+}
+
+.home-nav-group ul li .title {
+    font-size: 14px;
+    line-height: 32px;
+    top: 1px;
+}
+
+.home-nav-group ul li a {
+    display: block;
+    height: 100%;
+    padding: 0 10px;
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.home-nav-group ul li a.disable {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.home-nav-group ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.home-nav-group .home-nav-group-title {
+    font-size: 16px;
+    color: #feb100;
+    padding: 10px 5px;
+    background-color: rgba(0, 0, 0, .1);
+    border-radius: 2px;
+    margin: 0px 0px;
+    font-weight: normal;
+}
+
+.iconsize {
+    font-size: 64px;
+}
+
+.mainbox {
+    margin-bottom: 20px;
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, .1);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    padding: 10px 15px;
+}
+
+.huge {
+    font-size: 40px;
+}
+
+.huge>span {
+    font-size: 12px;
+}
+
+.n-icon-color1 {
+    background-color: #e88a05;
+}
+
+.n-icon-color2 {
+    background-color: #0093a8;
+}
+
+.n-icon-color3 {
+    background-color: #ce4b27;
+}
+
+.stageWrap {
+    height: 100px;
+    margin: 6px 5px;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}

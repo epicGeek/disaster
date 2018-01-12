@@ -1,0 +1,145 @@
+<div class='ices-boss dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+
+            <div class="ui-grid-row">
+                <div class="ui-g-12">
+                    <!--<label i18n>单元</label>&nbsp;-->
+                    <p-dropdown [options]="unitArray" [(ngModel)]="alarmMonitor.unitName" [style]="{'width':'11%'}"></p-dropdown>&nbsp;&nbsp;
+                    <!--<label i18n>告警类型</label>&nbsp;-->
+                    <p-dropdown [options]="alarmTypeArray" [(ngModel)]="alarmMonitor.alarmType" [style]="{'width':'11%'}"></p-dropdown>
+                    <!--<label i18n>时间选择</label>-->
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <p-calendar name='startDay' [(ngModel)]="alarmMonitor.startTime" inputStyleClass='form-control' showSeconds="showSeconds"
+                        showTime="showTime" hourFormat="24" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
+                    <p-calendar name='endDay' [(ngModel)]="alarmMonitor.endTime" inputStyleClass='form-control' showSeconds="showSeconds" showTime="showTime"
+                        hourFormat="24" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button pButton type="text" (click)="getData()" class="ui-button-primary" i18n-label="Search" label="查询" icon="fa-search"></button>
+                    <button pButton type="text" class="ui-button-secondary" (click)="resetParam()" i18n-label label="重置" icon="fa-refresh"></button>
+                    <!--<button pButton type="text" class="ui-button-success" (click)="configAlarmGroup()" i18n-label label="配置通知组" icon="fa-cog"></button>-->
+                </div>
+            </div>
+            <div class="ui-grid-row ">
+                <div class="ui-g-12">
+                    <p-dataTable [(value)]="monitorAlarmList" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]"
+                        (onLazyLoad)="loadAlarmMonitorLazy($event)" resizableColumns="true">
+                        <p-column field="startTime" [style]="{ 'width': '160px'} " i18n-header header="时间"></p-column>
+                        <p-column field="neName" [style]="{ 'width': '150px'} " i18n-header header="网元"></p-column>
+                        <p-column field="unitName" [style]="{ 'width': '150px'} " i18n-header header="单元"></p-column>
+                        <p-column field="alarmTitle" [style]="{ 'width': '150px'} " i18n-header header="告警名称"></p-column>
+                        <p-column field="alarmType" [style]="{ 'width': '150px'} " i18n-header header="告警类型"></p-column>
+                        <p-column field="alarmLevel" [style]="{ 'width': '150px'} " i18n-header header="等级"></p-column>
+                        <p-column field="alarmContent" i18n-header header="告警内容"></p-column>
+                        <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+                    </p-dataTable>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<p-dialog i18n-header header="配置通知组" [(visible)]="configAlarmGroupDisplay" modal=true width="1000">
+    <div class="ui-g-12">
+        <button pButton type="button" class="ui-button-success" icon="fa-plus-circle" i18n-label label="添加通知组" (click)="addAlarmGroup()"></button>
+    </div>
+    <div class="ui-g-12">
+        <p-dataTable [(value)]="alarmGroupList" [lazy]="false" [rows]="15" [paginator]="true" [rowsPerPageOptions]="[15,20,25,30,40,50]"
+            resizableColumns="true">
+            <p-column field="groupName" [style]="{ 'width': '150px'} " i18n-header header="通知组名称"></p-column>
+            <p-column field="groupDesc" [style]="{ 'width': '150px'} " i18n-header header="通知组描述"></p-column>
+            <p-column field="operation" [style]="{ 'width': '200px'}" i18n-header header="操作">
+                <ng-template let-alarmGroup="rowData" pTemplate="body">
+                    <button pButton type="button" class="ui-button-info" icon="fa-edit" i18n-label label="编辑组信息" (click)="editAlarmGroup(alarmGroup)"></button>
+                    <button pButton type="button" class="ui-button-primary" icon="fa-edit" i18n-label label="配置成员" (click)="configAlarmMember()"></button>
+                    <button pButton type="button" class="ui-button-danger" icon="fa-times-circle" i18n-label label="删除此组" (click)="deleteGroup(alarmGroup)"></button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </div>
+</p-dialog>
+
+<p-dialog i18n-header header="通知组成员" [(visible)]="alarmMemberDisplay" modal=true width="1200">
+    <div class="ui-g-12">
+        <button pButton type="button" class="ui-button-success" icon="fa-plus-circle" i18n-label label="添加成员" (click)="addMember()"></button>
+    </div>
+    <div class="ui-g-12">
+        <p-dataTable [(value)]="alarmMemberList" #dt [lazy]="false" [rows]="15" [paginator]="true" [rowsPerPageOptions]="[15,20,25,30,40,50]"
+            resizableColumns="true">
+            <p-column field="memberName" [style]="{ 'width': '200px'} " i18n-header header="成员名称"></p-column>
+            <p-column field="emailAddress" [style]="{ 'width': '200px'} " i18n-header header="邮件"></p-column>
+            <p-column field="cellPhoneNumber" [style]="{ 'width': '200px'} " i18n-header header="手机"></p-column>
+            <p-column field="isEmailNotice" [style]="{ 'width': '80px'}" i18n-header header="邮件通知"></p-column>
+            <p-column field="isShortTextNotice" [style]="{ 'width': '80px'}" i18n-header header="短信通知"></p-column>
+            <p-column field="operation" [style]="{ 'width': '150px'}" i18n-header header="操作">
+                <ng-template let-alarmMemberData="rowData" pTemplate="body">
+                    <button pButton type="button" class="ui-button-primary" icon="fa-edit" i18n-label label="编辑成员" (click)="editAlarmMember(alarmMemberData)"></button>
+                    <button pButton type="button" class="ui-button-danger" icon="fa-times-circle" i18n-label label="删除成员" (click)="deleteMember(alarmMemberData)"></button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </div>
+</p-dialog>
+
+<p-dialog i18n-header header="添加/编辑通知组" [(visible)]="addAlarmGroupDisplay" modal=true width="800">
+    <div class="ui-g-12">
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">通知组组名称</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入组名称" pInputText [(ngModel)]="alarmGroupNameInDialog" size="20" />
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">通知组描述</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入通知组描述" pInputText [(ngModel)]="alarmGroupDescInDialog" size="20" />
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button" pButton icon="fa-close" (click)="addAlarmGroupDisplay=false" i18n-label label="关闭"></button>
+            <button type="button" pButton icon="fa-check" (click)="saveGroup()" i18n-label label="保存"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-dialog i18n-header header="添加/编辑通知组成员" [(visible)]="addAlarmMemberDisplay" modal=true width="800">
+    <div class="ui-g-12">
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">组员名称</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入组员名称" pInputText [(ngModel)]="alarmMemberNameInDialog" size="20" />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-2"><label i18n class="custom-label">邮件</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入用户邮箱" pInputText [(ngModel)]="alarmMemberEmailAddresssInDialog" size="20"
+                />
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">邮件通知</label></div>
+            <div class="ui-g-3">
+               <p-dropdown [options]="mailNotice" [style]="{'width':'100%'}" [(ngModel)]="mailNoticeSelected" filter="filter"></p-dropdown>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+
+            <div class="ui-g-2"><label i18n class="custom-label">手机</label></div>
+            <div class="ui-g-3">
+                <input type="text" i18n-placeholder placeholder="请输入手机号码" pInputText [(ngModel)]="alarmMemberCellPhoneNumberInDialog" size="20"
+                />
+            </div>
+            <div class="ui-g-2"><label i18n class="custom-label">短信通知</label></div>
+            <div class="ui-g-3">
+                <p-dropdown [options]="shortTextNotice" [style]="{'width':'100%'}" [(ngModel)]="shortTextNoticeSelected" filter="filter"></p-dropdown>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button" pButton icon="fa-close" (click)="addAlarmMemberDisplay=false" i18n-label label="关闭"></button>
+            <button type="button" pButton icon="fa-check" (click)="saveMember()" i18n-label label="保存"></button>
+        </div>
+    </p-footer>
+</p-dialog>

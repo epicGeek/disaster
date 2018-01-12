@@ -1,0 +1,53 @@
+ <div class="ui-grid-row" style="margin-top: 25px;">  
+    <a style="cursor: pointer" (click)="menuClick('alarm/monitor',false)">
+      <div class="ui-g-2" > 
+          <div class="mainbox  n-icon-color1">
+                <div class="ui-grid-row">
+                      <div class="ui-g-3" style="line-height: 75px;">
+                          <i class="fa fa-bell iconsize"></i>
+                      </div>
+                      <!--<div class="ui-g-9" style="text-align: right;height:80px;overflow:auto">
+                          <div i18n>今日全网告警</div>
+                          <div *ngFor="let val of alarm" id="alarmCount">{{val}} </div>
+                      </div>-->
+                      <div class="outer-container" style="width:75%;">
+                        <div class="inner-container">
+                            <div class="content" style="text-align:right;font-size: 8px;">
+                                <div i18n>今日全网告警</div>
+                                <div style="font-size:14px" *ngFor="let val of alarm" id="alarmCount">{{val}} </div>
+                                
+                            </div>
+                        </div>
+                     </div>
+                </div>
+          </div>
+      </div>
+    </a> 
+    
+        <div class="ui-g-2" *ngFor="let kpi of kpiList"> 
+            <a style="cursor: pointer" (click)="menuClick('kpi/monitor',kpi.kpiCode)">
+                <div class="mainbox  n-icon-color{{kpi.color}}">
+                    <div class="ui-grid-row">
+                            <div class="ui-g-3" style="line-height: 75px;">
+                                <i class="fa fa-rss-square iconsize"></i>
+                            </div>
+                            <!--<div class="ui-g-9" style="text-align: center;height:80px;overflow:auto">
+                                <div>{{kpi.name}}</div>
+                                <div *ngFor="let val of kpi.list">{{val}}</div>
+                            </div>-->
+                            <div class="outer-container" style="width:75%;">
+                                <div class="inner-container">
+                                    <div id="t" class="content" style="text-align:right;font-size:4px; width:100%;">
+                                      <div>{{kpi.name}}</div>
+                                      <div *ngFor="let val of kpi.list" style="font-size:14px;text-align:right">
+                                            {{val.key}}:{{val.value}}
+                                      </div>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+</div>

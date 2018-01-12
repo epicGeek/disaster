@@ -1,0 +1,12 @@
+<div class="home-nav-group" *ngIf="menuItems.length != 0">
+    <h4 class="home-nav-group-title">{{ menuGroupDisplayName }}</h4>
+    <ul>
+        <li *ngFor="let menu of menuItems">
+             <a *ngIf="menu.system != 'href'" style="cursor: pointer" (click)="menuClick(menu)"><i class="fa fa-{{menu.icon}}"></i> 
+            <span class="title">{{menu.displayName}}</span></a>
+
+            <a *ngIf="menu.system == 'href'" href="{{menu.linkAddress}}{{token}}"  target="_blank"><i class="fa fa-{{menu.icon}}"></i> 
+            <span class="title">{{menu.displayName}}</span></a>
+        </li>
+    </ul>
+</div>

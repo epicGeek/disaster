@@ -1,0 +1,65 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline"  >
+                <!--<p-dropdown name="dhssList" [style]="{'width':'150px'}"  [(ngModel)] = "dhssName"  [options]="dhssList" filter="filter" styleClass="ui-column-filter"></p-dropdown>-->
+
+
+                <p-dropdown name="neType" [style]="{'width':'150px'}" [(ngModel)]="queryNeType" [options]="neType" filter="filter" styleClass="ui-column-filter"
+                    (onChange)="fillQueryTypes()"></p-dropdown>
+                <p-dropdown name="neName" [style]="{'width':'150px'}" [(ngModel)]="queryNeName" [options]="neList" filter="filter" styleClass="ui-column-filter"></p-dropdown>
+                <p-dropdown name="unitType" [style]="{'width':'150px'}" [(ngModel)]="queryUnitType" [options]="unitType" filter="filter"
+                    styleClass="ui-column-filter"></p-dropdown>
+                <input type="text" pInputText [(ngModel)]="paramStr" placeholder="unitName,IP Address" i18n-placeholder name='paramStr' [style]="{'width':'168px'}" />
+                <button pButton type="button" icon="fa-search" label="查询" i18n-label (click)="query()"></button>
+                <button pButton type="button" class="ui-button-secondary" (click)="resetQuery()" icon="fa-rotate-left" i18n-label label="重置"></button>
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable [value]="unitList" [rows]="15" [paginator]="true" [lazy]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="getUnitData($event)">
+                <!--<p-header>List of Cars</p-header> -->
+                <p-column field="neType" i18n-header header="网元类型"></p-column>
+                <p-column field="neName" i18n-header header="网元名称"></p-column>
+                <p-column field="unitType" i18n-header header="单元类型"></p-column>
+                <p-column field="unitName" i18n-header header="单元名称"></p-column>
+
+
+                <p-column field="serverIp" i18n-header header="登录IP"></p-column>
+                <p-column field="serverProtocol" i18n-header header="登录协议"></p-column>
+                <p-column i18n-header header="操作" [style]="{'width':'20%'}">
+                    <ng-template pTemplate="default" let-item="rowData">
+                        <button *ngIf="showClickDisplay" pButton type="button" class="ui-button-primary" (click)="oneClickPage(item)" icon="fa-sign-in" i18n-label
+                            label="终端"></button>
+                        <button pButton type="button" class="ui-button-success" (click)="showLog(item)" icon="fa-file-text" i18n-label label="日志"></button>
+
+                        <button *ngIf="webTemplate[item.unitType]" pButton type="button" class="ui-button-warning" (click)="showWebGUIList(item)" icon="fa-chain" i18n-label label="Web GUI"></button>
+
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+
+        <p-dialog i18n-header header="登录日志" [(visible)]="loginLogDisplay" modal="modal" width="700" responsive="true">
+            <div class="ui-g-12">
+                <p-dataTable [value]="loginLogRecords" [rows]="10" [paginator]="true">
+                    <p-column field="startTime" [style]="{'width':'150px'}" i18n-header header="登录时间"></p-column>
+                    <p-column field="icesUserName" [style]="{'width':'100px'}" i18n-header header="操作人"></p-column>
+                    <p-column field="loginUserName" [style]="{'width':'100px'}" i18n-header header="登录账号"></p-column>
+                    <p-column field="loginUnitName" [style]="{'width':'100px'}" i18n-header header="单元名称"></p-column>
+                    <p-column i18n-header [style]="{'width':'90px'}" header="操作">
+                        <ng-template pTemplate="default" let-item="rowData">
+                            <button pButton type="button" class="ui-button-success" (click)="downloadLog(item)" icon="fa-hand-o-down" i18n-label label="下载日志"></button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </p-dialog>
+
+        <p-dialog i18n-header header="Web GUI" [(visible)]="webGUIListDisplay" modal="modal" width="400" height="100" responsive="true">
+            <div class="ui-grid-row">
+                <button pButton type="button" *ngFor="let template of templateArray" (click)="showTemplate(template)" [label]="template.interface_name"></button>
+            </div>
+   
+        </p-dialog>
+
+    </div>

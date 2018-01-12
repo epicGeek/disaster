@@ -1,0 +1,187 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline"  #conditionForm="ngForm">
+
+                <button pButton type="button" (click)='addJob()' [disabled]="!conditionForm.form.valid" icon="fa-plus" i18n-label label="添加"></button>
+                <input type="text" (keyup)="inputKeyup();" [(ngModel)]="paramStr" size="50" pInputText placeholder="Filter instruction name" name='errorCode' />
+
+
+                <button pButton type="button" class="ui-button-secondary" (click)="reset()" icon="fa-rotate-left" i18n-label label="重置"></button>
+
+                <button pButton type="button" class="ui-button-success" (click)="stopAllDetailDisplay=true" icon="fa-stop" i18n-label label="全部停止"></button>
+
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable [value]="arrayList" [lazy]="true" [rows]="15" [responsive]="true" resizableColumns="true" [paginator]="true" [totalRecords]="totalSize" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="loadLazy($event)" item-height="100px">
+                <p-column field="jobName" i18n-header header="任务名称" [style]="{'width':'150px'}"></p-column>
+                <p-column field="jobDesc" i18n-header  header="任务描述" [style]="{'width':'150px'}"></p-column>
+                <p-column field="execDay" i18n-header  header="执行时间" [style]="{'width':'120px'}"></p-column>
+                <p-column header="执行周期" i18n-header  [style]="{'width':'100px'}">
+                    <ng-template let-item="rowData" pTemplate='body'>
+                        {{ execTypes[item.jobType].label }}
+                    </ng-template>
+                </p-column>
+                <p-column field="nextDay" i18n-header header="下次执行时间" [style]="{'width':'145px'}"></p-column>
+                <p-column header="状态" i18n-header [style]="{'width':'70px'}">
+                    <ng-template let-item="rowData" pTemplate='body'>
+                        {{ item.execFlag == 1 ? 'Execution' : 'Stop' }}
+                    </ng-template>
+                </p-column>
+                <p-column i18n-header header="操作" [style]="{'width':'500px'}">
+                    <ng-template let-item="rowData" pTemplate='body'>
+                         <button pButton type="button" class="ui-button-warning" icon='fa-edit' (click)='editItem(item)' i18n-label label="修改"></button>
+                         <button pButton type="button" class="ui-button-danger" icon='fa-remove' (click)='deleteItem(item)' i18n-label label="删除"></button>
+                         <button pButton type="button" class="ui-button-info" icon='fa-hand-o-right' (click)='selectChk(item)' i18n-label label="选择单元"></button>
+                         <button pButton type="button" class="ui-button-info" icon='fa-hand-o-right' (click)='selectCommand(item)' i18n-label label="选择指令"></button>
+                         <button pButton type="button" *ngIf="item.execFlag != 1" class="ui-button-success" icon='fa-play-circle-o' i18n-label label="启动" (click)='stopSmart(item,"1")'></button>
+                         <button pButton type="button" *ngIf="item.execFlag == 1" class="ui-button-warning" icon='fa-stop' i18n-label label="停止" (click)='stopSmart(item,"2")'></button>
+                         <button pButton type="button" (click)='execBtn(item)' class="ui-button-secondary" icon='fa-play' i18n-label label="立即执行"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+
+            <!-- 增加任务、修改任务弹窗 -->
+            <p-dialog i18n-header header="增加/修改任务" [(visible)]="editDetailDisplay" modal="modal" width="500">
+                <form [formGroup]="checkForm">
+                <div class="ui-grid-12">
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>执行周期</label><span style="color:red">*&nbsp;</span></div>
+                        <div class="ui-g-9">
+                            <p-dropdown [options]="execTypes" [style]="{'width':'200px'}" formControlName="jobType"  name='jobType' i18n-placeholder placeholder="执行周期"></p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>执行时间</label><span style="color:red">*&nbsp;</span></div>
+                        <div class="ui-g-9">
+                            <p-calendar inputStyleClass='form-control' showSeconds="true" formControlName="execDay" name='execDay' showTime="showTime" hourFormat="24" appendTo="body" [showIcon]="true" dateFormat="yy-mm-dd" [minDate]="minDate" readonlyInput="readonlyInput"></p-calendar>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>任务名称</label><span style="color:red">*&nbsp;</span></div>
+                        <div class="ui-g-9">
+                            <input type="text" pInputText size="30" formControlName="jobName" i18n-placeholder placeholder="任务名称" name='jobName' [readonly]="disabled"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>描述</label></div>
+                        <div class="ui-g-9">
+                            <textarea rows="5" cols="30" pInputTextarea [style]="{'width':'200px'}" i18n-placeholder placeholder="描述" formControlName="jobDesc"></textarea>
+                        </div>
+                    </div>
+                </div>
+                </form>
+                <p-footer>
+                    <div class="ui-dialog-buttonpane ui-widget-content">
+                        <button pButton type="button" class="ui-button-info" icon='fa-save' i18n-label label="保存" (click)='preservationItem(checkForm.value)' [disabled]="!checkForm.valid"></button>
+                        <button pButton type="button" class="ui-button-success" icon='fa-close' i18n-label label="取消" (click)='editDetailDisplay=false'></button>
+                    </div>
+                </p-footer>
+
+            </p-dialog>
+
+            <!-- 删除确认对话框 -->
+            <p-dialog i18n-header header="删除任务" [(visible)]="deleteDetailDisplay" modal="modal" width="300" responsive="true">
+                <p>
+                    <span i18n>确认删除</span>
+                </p>
+                <p-footer>
+                    <div class="ui-dialog-buttonpane ui-widget-content">
+                        <button type="button" pButton icon="fa-check" (click)="deleteItemChk()" i18n-label label="确认"></button>
+                        <button type="button" pButton icon="fa-close" (click)="deleteDetailDisplay=false" i18n-label label="取消"></button>
+                    </div>
+                </p-footer>
+            </p-dialog>
+
+            <!-- 选择单元弹窗 -->
+            <p-dialog i18n-header header="选择 [{{smartCheckJob.jobName}}] 单元" [(visible)]="unitDetailDisplay" modal="modal" width="900" responsive="true" (onHide)="getList();">
+                <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                    <input #gb type="text" pInputText size="50" placeholder="">
+                </div>
+                <div class="ui-widget-content" style="height: 400px">
+                    <p-dataTable [value]="unitList" [globalFilter]="gb" #dt [(selection)]="checkedUnit" [rows]="10" paginator="true">
+                        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                        <p-column field="neType" i18n-header header="网元类型" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                        <p-dropdown [(options)]="neType"  [(ngModel)] = "selectNeType"  [style]="{'width':'100%'}" filter="filter" styleClass="ui-column-filter" (onChange)="filterUnitAndTypeData();dt.filter($event.value,item.field,item.filterMatchMode)" ></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="unitType" i18n-header header="单元类型" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                        <p-dropdown [(options)]="unitType" [(ngModel)] = "selectUnitType"  [style]="{'width':'100%'}" filter="filter" styleClass="ui-column-filter" (onChange)="dt.filter($event.value,item.field,item.filterMatchMode)" ></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="neName" i18n-header header="网元名称" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                        <p-dropdown [(options)]="neList" [(ngModel)] = "selectNe"  [style]="{'width':'100%'}" filter="filter" (onChange)="dt.filter($event.value.ne_name,item.field,item.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="unitName" i18n-header header="单元名称">
+                        </p-column>
+                        <p-column [style]="{'width':'200px','overflow':'visible','text-align':'center'}">
+                            <ng-template pTemplate="header">
+                                        <p-splitButton i18n-label label="全部加入" icon="fa-check" (onClick)="allUnitJoin()" [model]="unitMenus"></p-splitButton>
+                            </ng-template>
+                            <ng-template let-item="rowData" pTemplate="body">
+                                        <p-inputSwitch i18n-onLabel onLabel="移除" i18n-offLabel offLabel="加入" [(ngModel)]="item.isOk" (onChange)="joinItem($event,item.id,'unit');"></p-inputSwitch>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+            </p-dialog>
+
+            <!-- 选择指令弹窗 -->
+            <p-dialog i18n-header header="选择 [{{smartCheckJob.jobName}}] 指令" [(visible)]="itemDetailDisplay" modal="modal" width="700" responsive="true" (onHide)="getList();">
+                <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                    <input #item type="text" pInputText size="50" >
+                </div>
+                <div class="ui-widget-content" style="height: 400px">
+                    <p-dataTable [value]="commandCheckItemList" [globalFilter]="item" #itemDt [rows]="10" paginator="true" [(selection)]="checkCommand">
+                        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                        <p-column field="name" i18n-header header="指令名称"></p-column>
+                        <p-column field="command" i18n-header header="指令内容"></p-column>
+                        <p-column field="applyUnit" i18n-header header="适用单元"></p-column>
+                        <p-column [style]="{'width':'200px','overflow':'visible','text-align':'center'}">
+                            <ng-template pTemplate="header">
+                                <p-splitButton i18n-label label="全部加入" icon="fa-check" (onClick)="joinSelectAllCommand()" [model]="itemMenus"></p-splitButton>
+                            </ng-template>
+                            <ng-template let-item="rowData" pTemplate="body">
+                                <p-inputSwitch i18n-onLabel onLabel="移除" i18n-offLabel offLabel="加入" [(ngModel)]="item.isOk" (onChange)="joinItem($event,item.itemId,'checkItem');"></p-inputSwitch>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+            </p-dialog>
+
+            <p-dialog i18n-header header="全部停止" [(visible)]="stopAllDetailDisplay" modal="modal" width="300" responsive="true">
+                <p>
+                    <span i18n>全部停止</span>
+                </p>
+                <p-footer>
+                    <div class="ui-dialog-buttonpane ui-widget-content">
+                        <button type="button" pButton icon="fa-check" (click)="stopAll()" i18n-label label="确认"></button>
+                        <button type="button" pButton icon="fa-close" (click)="stopAllDetailDisplay=false" i18n-label label="取消"></button>
+
+                    </div>
+                </p-footer>
+            </p-dialog>
+
+            <p-dialog i18n-header header="执行任务" [(visible)]="execDetailDisplay" modal="modal" width="300" responsive="true">
+                <p-footer>
+                    <div class="ui-dialog-buttonpane ui-widget-content">
+                        <button type="button" pButton icon="fa-check" (click)="exec()" i18n-label label="确认"></button>
+                        <button type="button" pButton icon="fa-close" (click)="execDetailDisplay=false" i18n-label label="取消"></button>
+                    </div>
+                </p-footer>
+            </p-dialog>
+
+            <p-growl [value]="msgs" sticky=""></p-growl>
+        </div>
+    </div>
+</div>

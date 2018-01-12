@@ -1,0 +1,34 @@
+<p-panel i18n-header header="自定义历史告警">
+  <div class="ui-grid-row">
+    <div class="ui-g-2"><label i18n class="custom-label">历史告警名称</label></div>
+    <div class="ui-g-9">
+      <input type="text" [size]="100" i18n-placeholder placeholder="请输入历史告警名称" pInputText [(ngModel)]="alarmHistoryName" size="20"
+      />
+      <button type="button" class="ui-button-info" pButton (click)="checkValid()" icon="fa-search" i18n-label label="检测"></button>
+      <button type="button" class="" pButton (click)="saveAlerm()" icon="fa-save" i18n-label label="保存"></button>
+    </div>
+  </div>
+
+</p-panel>
+<p-panel i18n-header header="自定义历史告警列表">
+
+    <p-dataTable [value]="dataList" [lazy]="true" [rows]="20" [paginator]="true" [totalRecords]="totalRecords" (onLazyLoad)="loadAlermsLazy($event)">
+      <p-column field="createTime" i18n-header header="保存时间"></p-column>
+      <p-column field="alermName" i18n-header header="告警名称"></p-column>
+      <p-column i18n-header fheader="操作">
+        <ng-template let-data="rowData" pTemplate="body">
+          <button pButton type="button" class="ui-button-danger" icon="fa-remove" (click)="removeItem(data)" i18n-label label="删除"></button>
+        </ng-template>
+      </p-column>
+      <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+    </p-dataTable>
+
+</p-panel>
+
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog i18n-header header="确认信息" icon="fa fa-question-circle" #cd width="425">
+    <p-footer>
+        <button type="button" pButton icon="fa-check" i18n-label label="确认" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+    </p-footer>
+</p-confirmDialog>

@@ -1,0 +1,65 @@
+<p-panel i18n-header header="设置-模板备份">
+  <div class="ui-grid-row">
+    <div class="ui-g-2"><label i18n class="custom-label">选择备份内容</label></div>
+    <div class="ui-g-6">
+      <p-checkbox i18n-label label="网络概况定义模板数据" name="网络概况定义模板数据" value="gs" [(ngModel)]="selectedBackupContent"></p-checkbox>
+      <p-checkbox i18n-label label="报告模板数据" name="报告模板数据" value="rt" [(ngModel)]="selectedBackupContent"></p-checkbox>
+      <p-checkbox i18n-label label="邮件组数据" name="邮件组数据" value="em" [(ngModel)]="selectedBackupContent"></p-checkbox>
+      <p-checkbox i18n-label label="定时任务配置数据" name="定时任务配置数据" value="sc" [(ngModel)]="selectedBackupContent"></p-checkbox>
+      <p-checkbox i18n-label label="模板通用设置" name="模板通用设置" value="cm" [(ngModel)]="selectedBackupContent"></p-checkbox>
+    </div>
+    <div class="ui-g-4">
+      <button type="button" [disabled]="backdupDisbled" (click)="backupSettings()" pButton icon="fa-play" i18n-label label="执行备份"></button>
+    </div>
+  </div>
+
+  <div class="ui-grid-row">
+    <div class="ui-g-2"><label i18n class="custom-label">选择备份文件</label></div>
+    <div class="ui-g-6">
+      <p-fileUpload name="files[]" url="{{uploadUrl}}" (onUpload)="upload($event)"></p-fileUpload>
+    </div>
+    <div class="ui-g-4">
+      <button type="button" (click)="restore()" pButton icon="fa-play" i18n-label label="执行恢复"></button>
+    </div>
+  </div>
+
+</p-panel>
+<p-panel i18n-header header="设置-模板通用设置">
+
+    <div class="ui-grid-row">
+      <div class="ui-g-3"><label i18n class="custom-label">模板大标题</label></div>
+      <div class="ui-g-9">
+        <input type="text" i18n-placeholder placeholder="请输入模板大标题" pInputText [(ngModel)]="commTemplet.modalTitle" size="20" />
+      </div>
+    </div>
+    <!--div class="ui-grid-row">
+      <div class="ui-g-3"><label i18n class="custom-label">总体概况描述</label></div>
+      <div class="ui-g-9">
+        <input type="text" i18n-placeholder placeholder="请输入总体概况描述" pInputText [(ngModel)]="overallStateDesc" size="20" />
+      </div>
+    </div-->
+    <!--div class="ui-grid-row">
+      <div class="ui-g-3"><label i18n class="custom-label">封二类型</label></div>
+      <div class="ui-g-9">
+        <p-radioButton name="text" value="text" i18n-label label="图片版" [(ngModel)]="selectedValue"></p-radioButton>
+        <p-radioButton name="picture" value="picture" i18n-label label="文字版" [(ngModel)]="selectedValue"></p-radioButton>
+      </div>
+    </div-->
+    <div class="ui-grid-row">
+      <div class="ui-g-3"><label i18n class="custom-label">全网总体概况信息概述</label></div>
+      <div class="ui-g-9">
+        <textarea rows="5" cols="50" [(ngModel)]="commTemplet.allNeContent" pInputTextarea></textarea>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-3"><label i18n class="custom-label">历史告警分类汇总概述</label></div>
+      <div class="ui-g-9">
+        <textarea rows="5" cols="50" [(ngModel)]="commTemplet.hisContent" pInputTextarea></textarea>
+      </div>
+    </div>
+      <div class="ui-grid-row" style="text-align:center">
+        <button type="button" pButton icon="fa-check" (click)="saveCommTemplet()" i18n-label label="保存"></button>
+      </div>
+</p-panel>
+
+<p-growl [value]="msgs"></p-growl>

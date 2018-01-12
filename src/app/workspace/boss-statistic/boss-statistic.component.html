@@ -1,0 +1,24 @@
+<div class='dhss-container'>
+  <div class="ui-grid-row">
+      <div class="ui-g-12">
+          <p-dropdown name="hlrsns" [style]="{'width':'11%'}" [options]="hlrsns" [(ngModel)]="hlrsnSelected" filter="filter"></p-dropdown>
+          <!-- <p-dropdown name="operationNames" [style]="{'width':'11%'}" [options]="operationNames" [(ngModel)]="operationNameSelected" filter="filter"></p-dropdown> -->
+          <p-dropdown name="businessTypes" [style]="{'width':'11%'}" [options]="businessTypes" [(ngModel)]="businessTypeSelected" filter="filter"></p-dropdown>
+          <p-dropdown name="grains" [style]="{'width':'11%'}" [options]="grains" [(ngModel)]="grainSelected" filter="filter"></p-dropdown>
+          <p-calendar [(ngModel)]="startDate" name="startDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <p-calendar [(ngModel)]="endDate" name="endDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button pButton type="button" class="ui-button-info" icon="fa-search" i18n-label label="查询" (click)="getStatistic()"></button>
+      </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-12" id="text" >
+         <chart [options]="options" width = '1000px'></chart>
+     </div>
+ </div>
+
+</div>
+<p-growl [(value)]="msgs" life="10000"></p-growl>

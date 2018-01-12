@@ -1,0 +1,57 @@
+
+{
+	"from": 0,
+	"size": 200,
+	"query": {
+		"bool": {
+			"must": {
+				"bool": {
+					"must": [
+						{
+							"match": {
+								"hlrsn": {
+									"query": "51"
+								}
+							}
+						},
+						{
+							"match": {
+								"operationName": {
+									"query": "??"
+								}
+							}
+						},
+						{
+							"bool": {
+								"should": [
+									{
+										"match": {
+											"imsi": {
+												"query": "?",
+												"type": "phrase"
+											}
+										}
+									},
+									{
+										"match": {
+											"imsi": {
+												"query": "?"
+											}
+										}
+									},
+									{
+										"match": {
+											"msisdn": {
+												"query": "?"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		}
+	}
+}

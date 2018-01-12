@@ -1,0 +1,30 @@
+<div class='dhss-container'>
+        <div class="ui-g-12">
+              <div class = "ui-g-5">
+                
+                <p-calendar [(ngModel)]="startDate" name = "startDate" [showIcon]="true" dateFormat="yy-mm-dd"  showTime="showTime" hourFormat="24"></p-calendar>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-calendar [(ngModel)]="endDate" name = "endDate" [showIcon]="true" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24"></p-calendar>
+                </div>
+
+            <div class = "ui-g-2">
+                 <input name="userName" i18n-placeholder placeholder="用户名" type="text" size="24" pInputText [(ngModel)]="userName" />
+            </div>
+            <div class = "ui-g-2">
+              <button pButton type="button" class="ui-button-secondary" icon="fa-search" i18n-label label="查询" (click)="query()"></button>
+              <button pButton type="button" class="ui-button-secondary" icon="fa-rotate-left" i18n-label label="重置" (click)="reset()"></button>
+            </div>
+        </div>
+        <div class="ui-g-12">
+             <p-dataTable [value]="systemOperationLogArray" [lazy]="false" [rows]="15" [paginator]="true"
+            [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+                <p-column field="app_name" i18n-header header="项目名称"></p-column>
+                <p-column field="app_moulde" i18n-header header="模块名称"></p-column>
+                <p-column field="app_event" i18n-header header="操作事件内容"></p-column>
+                <p-column field="oper_time" i18n-header header="操作时间"></p-column>
+                <p-column field="oper_user" i18n-header header="用户名"></p-column>
+                <p-column field="remote_addr" i18n-header header="IP"></p-column>
+                <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+            </p-dataTable>
+        </div>
+</div>

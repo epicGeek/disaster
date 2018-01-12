@@ -1,0 +1,119 @@
+<p-tabView #createTabView>
+    <p-tabPanel i18n-header header="配置" leftIcon="fa-edit" [selected]="tabOneSelected">
+        <div class="ui-grid-row">
+            <div class="ui-g-8">
+                <p-panel i18n-header header="配置">
+                    <div class="ui-panel-content" style="height:440px">
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n>开始时间</label></div>
+                            <div class="ui-g-10">
+                              <p-calendar [(ngModel)]="manualOptionVo.startTime" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" [showIcon]="true"></p-calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n>结束时间</label></div>
+                            <div class="ui-g-10">
+                              <p-calendar [(ngModel)]="manualOptionVo.endTime" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" [showIcon]="true"></p-calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n>选择内容</label></div>
+                            <div class="ui-g-10">
+                              <p-checkbox name="group1" #cttGs value="hasgs" i18n-label label="全网总体概要信息" [(ngModel)]="selectedContent"></p-checkbox>
+                              <p-checkbox name="group1" #cttGsexcel value="gsexcel" i18n-label label="全网总体详细信息" [(ngModel)]="selectedContent"></p-checkbox>
+                              <p-checkbox name="group1" #cttHs value="hashs" i18n-label label="历史告警分类汇总" [(ngModel)]="selectedContent"></p-checkbox>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n>选择模板</label></div>
+                            <div class="ui-g-10">
+                              <div style="width:500px;height:100px;border:1px solid #D5D5D5;overflow-y:scroll;">
+                                  <div class="ui-g-12" *ngFor="let data of checkBoxData" >
+                                    <p-radioButton name="group2" [value]="data.value" [label]="data.label" [(ngModel)]="manualOptionVo.templetId"></p-radioButton>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                        <!--div class="ui-grid-row">
+                            <div class="ui-g-2"><label>选择快照</label></div>
+                            <div class="ui-g-10">
+                              <p-checkbox name="group3" value="val1" label="是否选择快照" [(ngModel)]="selectedKz"></p-checkbox>
+                              <p-calendar [(ngModel)]="startTime" [showIcon]="true"></p-calendar>
+                            </div>
+                        </div-->
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n>备注信息</label></div>
+                            <div class="ui-g-10">
+                              <textarea rows="2" cols="50" pInputTextarea [(ngModel)]="manualOptionVo.comments"></textarea>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-12" style="text-align:right">
+                               <button pButton [disabled]="playDisbled" type="button" (click)="play(createTabView)" icon="fa-play" i18n-label label="执行"></button>
+                               <button pButton [disabled]="stopDisbled" type="button" (click)="getStatus()" icon="fa-stop" class="ui-button-danger" i18n-label label="终止"></button>
+                            </div>
+                        </div>
+                    </div>
+                </p-panel>
+            </div>
+            <div class="ui-g-4">
+                <p-panel i18n-header header="日志">
+                    <div class="ui-panel-content" style="height:440px">
+                        <div class="ui-grid-row" *ngFor="let item of logInfoList">
+                          {{item.label}}
+                      </div>
+                    </div>
+                </p-panel>
+            </div>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel i18n-header header="生成列表" leftIcon="fa-file" [selected]="tabTwoSelected">
+        <p-dataTable [value]="dataList" [lazy]="true" [rows]="20" [paginator]="true"
+            [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)">
+            <p-column field="execTime" i18n-header header="执行时间"></p-column>
+            <!--<p-column field="person" i18n-header header="创建人"></p-column>-->
+            <p-column field="desc" i18n-header header="备注信息"></p-column>
+            <p-column i18n-fheader fheader="操作">
+                 <ng-template pTemplate="default" let-data="rowData">
+                    <button pButton type="button" icon="fa-play" (click)="yinyong(data,createTabView,cttGs,cttGsexcel,cttHs)" i18n-label label="引用"></button>
+                    <button pButton type="button" class="ui-button-warning" (click)="removeItem(data)" icon="fa-remove" i18n-label label="删除"></button>
+                    <button pButton type="button" *ngIf="messageSendInterface!=null && messageSendInterface!=''" class="ui-button-danger" (click)="emailSend(data)" icon="fa-envelope-o" i18n-label label="以Email发送"></button>
+                    <button pButton type="button" class="ui-button-success" (click)="downItem(data)"icon="fa-hand-o-down" i18n-label label="下载"></button>
+                 </ng-template>
+            </p-column>
+        </p-dataTable>
+    </p-tabPanel>
+</p-tabView>
+
+<p-dialog i18n-header header="选择邮件组/人" width="700" modal="modal" [(visible)]="emailDisplay">
+    <p-dataTable #mailTable [value]="groups" (onRowSelect)="onGroupSelected($event)" (onRowUnselect)="onGroupUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedGroup">
+        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
+        <p-column field="groupName" i18n-header header="邮件组"></p-column>
+        <ng-template let-car pTemplate="rowexpansion">
+            <div style="width:auto;height:100px">
+              <p-dataTable [value]="car.mailUserPos" (onRowSelect)="onUserSelected($event)" (onRowUnselect)="onUserUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedUser">
+                <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                <p-column field="userName" i18n-header header="成员"></p-column>
+                <p-column field="email" i18n-header header="邮件"></p-column>
+                <p-column field="phone" i18n-header header="手机"></p-column>
+              </p-dataTable>
+            </div>
+        </ng-template>
+    </p-dataTable>
+    <p-footer>
+        <div class="ui-grid-row" style="text-align:center">
+            <button type="button" (click)="sendMsg()" pButton icon="fa-hand-o-right" class="ui-button-danger" i18n-label label="发送"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-growl [value]="msgs"></p-growl>
+
+<p-confirmDialog i18n-header header="确认信息" icon="fa fa-question-circle" #cd width="425">
+    <p-footer>
+        <button type="button" pButton icon="fa-check" i18n-label label="确认" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+    </p-footer>
+</p-confirmDialog>
+

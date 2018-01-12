@@ -1,0 +1,54 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline"  #conditionForm="ngForm">
+
+                <label i18n>巡检时间范围</label>
+                <p-calendar name="startDate" inputStyleClass='form-control' [(ngModel)]="startDate" [showIcon]="true" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" (onSelect)="getResultList()"></p-calendar> &nbsp;&nbsp; <label>-</label> &nbsp;&nbsp;
+                <p-calendar name="endDate" inputStyleClass='form-control' [(ngModel)]="endDate" [showIcon]="true" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" (onSelect)="getResultList()"></p-calendar>
+                &nbsp;&nbsp; <label>-</label> &nbsp;&nbsp;
+                <input name="jobName" i18n-placeholder placeholder="任务名称" type="text" size="30" pInputText [(ngModel)]="jobName" (keyup)="getResultList()" />
+
+                <button pButton type="button" class="ui-button-secondary" icon="fa-rotate-left" i18n-label label="重置" (click)="reset()"></button>
+
+                <button pButton type="button" (click)="exception()" class="ui-button-danger" icon="fa-minus-circle" i18n-label label="异常单元"></button>
+
+                <button pButton type="button" class="ui-button-secondary" icon='fa-hand-o-down' (click)="chkDown()" i18n-label label="下载日志"></button>
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable [value]="resultList" #dt [responsive]="true" [paginator]="true" [rows]="15" [lazy]="true" (onLazyLoad)="LazyLoad($event)" [rowsPerPageOptions]="[15,20,25,30,40,50]" resizableColumns="true" [totalRecords]="totalSize">
+                <p-column [style]="{'width':'35px'}">
+                    <ng-template pTemplate="header" let-item="rowData">
+                      <p-checkbox name="groupname" binary="true" (onChange)="selectJob($event,dt)"></p-checkbox>All
+                  </ng-template>
+                    <ng-template let-item="rowData" pTemplate="body">
+                        <p-checkbox name="groupname1" [(ngModel)] = "checkedJob" [value]="item.entityId"></p-checkbox>
+                  </ng-template>
+                </p-column>
+                <p-column field="jobName" i18n-header header="任务名称" [style]="{'width':'180px'}"></p-column>
+                <p-column field="jobDesc" i18n-header header="任务描述" [style]="{'width':'180px'}"></p-column>
+                <p-column field="startTime" i18n-header header="执行时间" [style]="{'width':'140px'}"></p-column>
+                <p-column i18n-header header="状态" [style]="{'width':'85px'}">
+                    <ng-template pTemplate='body' let-item="rowData">
+                  {{ item.execFlag == 2 ? 'SUCCESS' : 'Execution' }}
+                </ng-template>
+                </p-column>
+                <p-column field="amountUnit" i18n-header header="单元数量" [style]="{'width':'80px'}"></p-column>
+                <p-column i18n-header header="异常单元" [style]="{'width':'80px'}">
+                    <ng-template pTemplate='body' let-item="rowData">
+                  <span [style.color]="item.highlight" >{{item.errorUnit}}</span>
+                </ng-template>
+                </p-column>
+                <p-column i18n-header header="操作" [style]="{'width':'250px'}">
+                    <ng-template pTemplate='body' let-item="rowData">
+                   <button pButton type="button" class="ui-button-warning" icon='fa-outdent' (click)="job(item)"  i18n-label label="按任务查看"></button>
+                   <button pButton type="button" class="ui-button-danger" icon='fa-server' (click)="ne(item)"  i18n-label label="按网元查看"></button>
+                   <button pButton type="button" class="ui-button-secondary" icon='fa-hand-o-down' (click)="jobDownloadLog(item)" i18n-label  label="下载"></button>
+                </ng-template>
+                </p-column>
+            </p-dataTable>
+            <p-growl [value]="msgs" sticky=""></p-growl>
+        </div>
+    </div>
+</div>

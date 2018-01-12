@@ -1,0 +1,57 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline" #conditionForm="ngForm">
+
+                <p-dropdown name="unitType" [style]="{'width':'150px'}" [(ngModel)]="queryUnitType" [options]="unitType" filter="filter" styleClass="ui-column-filter" (onChange)="filterUnitTypeQueryData()"></p-dropdown>
+                <input type="number" pInputText [(ngModel)]="queryAlarmNo" placeholder="alarm_no" name='queryAlarmNo' [style]="{ 'width': '168px'}" />
+                <button pButton type="button" icon="fa-search" i18n-label label="查询" (click)="query() "></button>
+                <button pButton type="button" class="ui-button-secondary" (click)="resetQuery()" icon="fa-rotate-left" i18n-label label="重置"></button>
+                <button pButton type="button" (click)="exportAlarmRule()" class="ui-button-success" icon="fa-file-excel-o" i18n-label label="导出"></button>
+                <button pButton type="button" (click)="importAlarmRule()" class="ui-button-info" icon="fa-arrow-circle-o-up" i18n-label label="导入"></button>
+            </form>
+        </div>
+        <div class="ui-g-12 ">
+            <p-dataTable #dt [value]="alarmRuleList" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="loadAlarmRuleLazy($event)">
+                <p-column field="neType" i18n-header header="网元类型"></p-column>
+                <p-column field="unitType" i18n-header header="单元类型"></p-column>
+                <p-column field="alarmNo" i18n-header header="告警号"></p-column>
+                <p-column field="alarmType" i18n-header header="告警类型"></p-column>
+                <p-column field="alarmLevel" i18n-header header="告警等级"></p-column>
+                <p-column field="alarmText" i18n-header header="告警文本"></p-column>
+                <p-column field="alarmMeaning" i18n-header header="告警含义"></p-column>
+                <p-column field="alarmDesc" i18n-header header="告警描述"></p-column>
+                <p-column field="probableCause" i18n-header header="可能原因"></p-column>
+                <!--<p-column field="alarmContent" i18n-header header="ALARM_CONTENT"></p-column>-->
+                <!--<p-column field="faultId" i18n-header header="FAULT_ID"></p-column>-->
+                <!--<p-column field="alarmName" i18n-header header="ALARM_NAME"></p-column>-->
+               
+                <!--<p-column field="alarmLevelVd " i18n-header header="ALARM_LEVEL_VD "></p-column>-->
+                <!--<p-column field="releaseVersion " i18n-header header="RELEASE_VERSION "></p-column>-->
+                <!--<p-column field="probableCause " i18n-header header="PROBABLE_CAUSE "></p-column>-->
+                <!--<p-column field="onEquipment " i18n-header header="ON_EQUIPMENT "></p-column>
+                <p-column field="onBusiness " i18n-header header="ON_BUSINESS "></p-column>
+                <p-column field="alarmStd " i18n-header header="ALARM_STD "></p-column>
+                <p-column field="handle " i18n-header header="HANDLE "></p-column>
+                <p-column field="handleDelay " i18n-header header="HANDLE_DELAY "></p-column>
+                <p-column field="alarmRemark " i18n-header header="ALARM_REMARK "></p-column>
+                <p-column field="isActive " i18n-header header="IS_ACTIVE "></p-column>
+                <p-column field="notifyImmediately " i18n-header header="NOTIFY_IMMEDIATELY "></p-column>
+                <p-column field="totalSumInterval " i18n-header header="TOTAL_SUM_INTERVAL "></p-column>
+                <p-column field="totalSumLimit " i18n-header header="TOTAL_SUM_LIMIT "></p-column>
+                <p-column field="vipSumInterval " i18n-header header="VIP_SUM_INTERVAL "></p-column>
+                <p-column field="vipSumLimit " i18n-header header="VIP_SUM_LIMIT "></p-column>
+                <p-column field="generalSumInterval " i18n-header header="GENERAL_SUM_INTERVAL "></p-column>
+                <p-column field="generalSumLimit " i18n-header header="GENERAL_SUM_LIMIT "></p-column>
+                <p-column field="isImportant " i18n-header header="IS_IMPORTANT "></p-column>
+                <p-column field="fromRow " i18n-header header="FROM_ROW "></p-column>
+                <p-column field="fromFile " i18n-header header="FROM_FILE "></p-column>-->
+                 <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+            </p-dataTable>
+        </div>
+    </div>
+</div>
+    <p-dialog i18n-header header="导入" [(visible)]="uploadDisplay" modal="modal" width="600">
+        <p-fileUpload maxFileSize="10000000" i18n-chooseLabel chooseLabel="选择文件" i18n-uploadLabel uploadLabel="上传" i18n-cancelLabel cancelLabel="取消" [style]="{'width':'78%','margin':'0 auto'}" #fileUpload name="templateFile" url="{{uploadUrl}}" (onUpload)="afterUpload($event)"></p-fileUpload>
+    </p-dialog>
+<p-growl [value]="msgs"></p-growl>

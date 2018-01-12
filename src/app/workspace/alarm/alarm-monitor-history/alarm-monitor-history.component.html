@@ -1,0 +1,54 @@
+<div class='ices-boss dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+
+            <div class="ui-grid-row">
+                <div class="ui-g-12">
+                    <input type="text" size="20" [(ngModel)]="alarmHistory.alarmUnit" i18n-placeholder placeholder="根据单元模糊查询" pInputText />&nbsp;&nbsp;
+                    <input type="text" size="20" [(ngModel)]="alarmHistory.notifyId" i18n-placeholder placeholder="根据告警ID进行查询" pInputText />&nbsp;&nbsp;
+                    <input type="text" size="20" [(ngModel)]="alarmHistory.alarmNo" i18n-placeholder placeholder="根据告警号进行查询" pInputText />&nbsp;&nbsp;
+                    <p-dropdown [options]="unitArray" [(ngModel)]="alarmHistory.alarmCell" [style]="{'width': '200px'}"></p-dropdown>&nbsp;&nbsp;
+                    <p-dropdown [options]="alarmLevelArray" [(ngModel)]="alarmHistory.alarmLevel" [style]="{'width': '200px'}" i18n-placeholder  placeHolder="请选择等级"></p-dropdown>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-g-12">
+                    <p-calendar name='execDay' [(ngModel)]="alarmHistory.startTime" inputStyleClass='form-control' showSeconds="showSeconds" showTime="showTime" hourFormat="24" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
+                    <p-calendar name='execDay' [(ngModel)]="alarmHistory.endTime" inputStyleClass='form-control' showSeconds="showSeconds" showTime="showTime" hourFormat="24" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button pButton type="text" (click)="getData()" class="ui-button-primary" i18n-label="Search" label="查询" icon="fa-search"></button>
+                    <button pButton type="text" class="ui-button-secondary" (click)="resetParam()" i18n-label label="重置" icon="fa-refresh"></button>
+                    <button pButton type="text" class="ui-button-success" i18n-label label="导出" icon="fa-external-link" (click)="exportData()"></button>
+                </div>
+            </div>
+            <div class="ui-grid-row ">
+                <p-dataTable #dt [(value)]="historyAlarmList" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="loadAlarmHistoryLazy($event)" exportFilename="alarm_history">
+                    <p-column field="notifyId" [style]="{ 'width': '75px'} " i18n-header header="ID"></p-column>
+                    <p-column field="alarmCell" i18n-header header="告警单元"></p-column>
+                    <p-column field="alarmLevel" [style]="{ 'width': '75px'} " i18n-header header="告警等级"></p-column>
+                    <p-column field="alarmNo" [style]="{ 'width': '120px'} " i18n-header header="告警号"></p-column>
+                    <p-column field="startTime" [style]="{ 'width': '180px'}"  i18n-header header="告警激活时间"></p-column>
+                    <!--<p-column field="receiveStartTime" [style]="{ 'width': '180px'}"  i18n-header header="告警激活时间"></p-column>-->
+                    <p-column field="diagInfo" [style]="{ 'width': '180px'}"  i18n-header header="Diag ID"></p-column>
+                    <!--<p-column field="supplInfo" [style]="{ 'width': '180px','display':'none'}"  i18n-header header="supplInfo"></p-column>-->
+                    <p-column field="receiveCancelTime" [style]="{ 'width': '180px'}"  i18n-header header="告警取消时间"></p-column>
+                    <p-column i18n-header header="描述" [style]="{ 'width': '100px'}" >
+                        <ng-template pTemplate="default " let-item="rowData ">
+                            <button class="ui-button-warning " (click)="alarmDesc(item) " icon="fa-hospital-o " pButton type="button " i18n-label  label="详细信息"></button>
+                        </ng-template>
+                    </p-column>
+                    <p-footer><label i18n>总数</label>{{totalRecords}}</p-footer>
+                </p-dataTable>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<p-dialog i18n-header  header="详细信息" width="700" modal="modal" [(visible)]="alarmDescDisplay">
+    <div style="width:100%;height:400px;overflow-y:scroll">
+        <pre style="width:100%">{{alarmDescStr}}</pre>
+    </div>
+</p-dialog>
+<p-growl [value]="msgs"></p-growl>

@@ -1,0 +1,34 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <input #params1 placeholder="filter params" type="text" size="30" pInputText />
+
+        </div>
+        <div class="ui-g-12" style="height: 400px">
+            <p-dataTable [value]="resultList" #jobDt [globalFilter]="params1">
+                <p-header>&nbsp;
+                    <span style="float:right">
+                        <a routerLink="/workspace/smart/result"> <i class="fa fa-backward"></i><span i18n>返回巡检结果</span></a>
+                    </span>
+                </p-header>
+                <p-column field="checkItemName" *ngIf="pageType == 'job'" i18n-header header="指令名称"></p-column>
+                <p-column field="neType" *ngIf="pageType == 'ne'" i18n-header header="网元类型"></p-column>
+                <p-column field="neName" *ngIf="pageType == 'ne'" i18n-header header="网元名称"></p-column>
+
+                <p-column *ngIf="pageType == 'job'" field="unitCount" i18n-header header="单元数量"></p-column>
+                <p-column *ngIf="pageType != 'job'" field="unitCount" i18n-header header="任务数量"></p-column>
+                <p-column field="errorCount" i18n-header header="异常单元">
+                    <ng-template let-col let-item="rowData" pTemplate="body">
+                        <span [style.color]="item.highlight">{{item.errorCount}}</span>
+                    </ng-template>
+                </p-column>
+                <p-column i18n-header header="操作">
+                    <ng-template pTemplate='body' let-item="rowData">
+                        <button pButton type="button" (click)="downLoadLog(item)" class="ui-button-secondary" icon='fa-hand-o-down' i18n-label  label="下载日志"></button>
+                        <button pButton (click)="showResult(item)" type="button" class="ui-button-wran" icon='fa-file' i18n-label  label="查看详情"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+</div>

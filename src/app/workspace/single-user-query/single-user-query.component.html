@@ -1,0 +1,86 @@
+<div class='ices-boss dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <div class="ui-grid-row">
+                <label>IMSI or MSISDN</label>
+                <input id="in" type="text" size="30" pInputText [(ngModel)]="params" />
+                <button pButton (click)="queryUserData()" class="ui-button-primary" type="button" icon="fa-search" i18n-label label="查询"></button>
+                <button pButton class="ui-button-success" type="button" icon="fa-history" i18n-label label="历史查询记录" (click)="historyLogQuery()"></button>
+                <span *ngIf="fromPGW" style="color: red">&nbsp;&nbsp;<label i18n>该结果来自</label>&nbsp;&nbsp; {{fromPGW}}</span>
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <p-tabView *ngIf="data.length != 0 ">
+                <p-tabPanel *ngFor="let item of data" i18n-header [header]="item.tabName" leftIcon="fa-calendar" [selected]="item.selected">
+                    <div class="ui-grid-row">
+                    <p-panel *ngFor="let node of item.children" [class]="item.col"   >
+                        <div *ngIf="!node.isArray" >
+                            <div *ngIf="!node.subField">
+                                <!-- <div *ngIf="indexOfln(node.value)" style="margin:0 auto;width:400px;word-wrap:break-word">
+                                    &nbsp;{{replaceSpace(node.value)}}
+                                </div> -->
+                                <div style="overflow-y:scroll;">
+                                    <pre style="margin:0 auto;">&nbsp;{{replaceSpace(node.value)}}</pre>
+                                    <!-- <div id="test"></div> -->
+                                </div>
+                            </div>
+                            <div *ngIf="node.subField">
+                                <div *ngFor="let subfield of node.subField" class="ui-grid-row" >
+                                    <div class="ui-g-6"><label>{{subfield.fieldName}} : </label></div>
+                                    <div class="ui-g-6" style="word-break:break-all;">
+                                        <label>{{ subfield.value}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="node.isArray" style="width:100%;overflow-x:scroll;">
+                            <p-dataTable [(value)]="node.values" lazy="true" (onLazyLoad)="isArrayValues(node)">
+                                <p-headerColumnGroup>
+                                    <p-row>
+                                        <p-column  *ngFor="let subItem of node.subField" [style]="{'width':subItem.width}" >
+                                            <ng-template let-tempData="rowData" pTemplate="header">
+                                                <div>
+                                                    {{subItem.fieldName}}
+                                                </div>
+                                            </ng-template>
+                                        </p-column>
+                                    </p-row>
+                                </p-headerColumnGroup>
+
+                                <p-column *ngFor="let subColumn of node.columns" [field]="subColumn.value" [style]="{'white-space':'nowrap'}"></p-column>
+                                <!--<p-column *ngFor="let subItem of node.subField" [field]="subItem.fieldName" [header]="col.fieldName"></p-column>-->
+                            </p-dataTable>
+                        </div>
+                        <p-header>{{node.fieldName}}</p-header>
+                    </p-panel>
+                    </div>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+
+    <div class="ui-g-12">
+        <p-dialog i18n-header header="查询记录" width="1200" modal="modal" [(visible)]="searchLogDisplay" height="500">
+            <p-dataTable [style]="{'width':'80%','margin':'0 auto'}" [value]="historyQueryRecordTable" [lazy]="false" [rows]="10" [paginator]="true"
+                [totalRecords]="totalRecords" [globalFilter]="gb" #dt>
+                <p-header>
+                    <input #gb type="text" pInputText size="124" placeholder="Global Filter">
+                </p-header>
+                <p-column field="createTime" i18n-header header="查询时间"></p-column>
+                <p-column field="numberSection" i18n-header header="查询号码"></p-column>
+                <p-column field="createName" i18n-header header="查询者"></p-column>
+                <p-column field="operation" i18n-header header="操作">
+                    <ng-template let-historyQueryRecord="rowData" pTemplate="body">
+                        <button pButton type="button" class="ui-button-info" (click)="downloadExcel(historyQueryRecord.path)" icon="fa-edit" i18n-label
+                            label="下载XML"></button>
+                        <button pButton type="button" class="ui-button-secondary" (click)="readCachedFile(historyQueryRecord.path,historyQueryRecord.numberSection,historyQueryRecord.unitName)" icon="fa-file-text-o"
+                            i18n-label label="读取文件"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </p-dialog>
+    </div>
+
+
+
+</div>

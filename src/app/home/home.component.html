@@ -1,0 +1,18 @@
+<div class="home-container">
+    <div class="content-pad">
+        <home-alarm-group *ngIf="showCount"></home-alarm-group>
+        <div class="ui-g">
+            <div class="ui-g-4 ui-sm-12">
+                <home-nav-group [menuGroupName]="'DailyOperation'" [menuGroupDisplayName]="'Daily Operation'" [menuItems]="[]"></home-nav-group>
+            </div>
+            <div class="ui-g-4 ui-sm-12">
+                <home-nav-group [menuGroupName]="'Intelligence'" [menuGroupDisplayName]="'Intelligence'" [menuItems]="[]"></home-nav-group>
+                <home-nav-group [menuGroupName]="'systemConfig'" [menuGroupDisplayName]="'System Config'" [menuItems]="[]"></home-nav-group>
+            </div>
+            <div class="ui-g-4 ui-sm-12">
+                <home-nav-group [menuGroupName]="'systemManage'" [menuGroupDisplayName]="'System Manage'" [menuItems]="[]"></home-nav-group>
+            </div>
+        </div>
+        <footer>THE SYSTEM DEVELOPED BY NOKIA</footer>
+    </div>
+</div>

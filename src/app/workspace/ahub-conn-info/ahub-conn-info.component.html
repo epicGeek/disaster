@@ -1,0 +1,35 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline" #conditionForm="ngForm">
+                <input #gb type="text" pInputText size="50" placeholder="Global Filter">
+                <p-dropdown [options]="unitList" [style]="{'width': '200px'}" (onChange)="dt.filter($event.value,'ahubName','equals');test(dt)"></p-dropdown>
+
+                <!--<button pButton type="button" class="ui-button-primary" icon="fa-arrow-circle-down" i18n-label label="下载模板" (click)="downloadTemplate()"></button>-->
+
+                <button pButton type="button" class="ui-button-info" icon="fa-arrow-circle-o-up" i18n-label label="导入" (click)="showImportTemplate()"></button>
+
+                <button pButton type="button" class="ui-button-success" icon="fa-file-excel-o" i18n-label label="导出" (click)="exportData()"></button>
+
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable [value]="ahubConnInfoList" [globalFilter]="gb" #dt [totalRecords]="totalRecords">
+                <p-column field="ahubName" i18n-header header="AHUB_NAME"></p-column>
+                <p-column field="ipAddress" i18n-header header="IP_ADDRESS"></p-column>
+                <p-column field="selfPort" i18n-header header="SELT_PORT"></p-column>
+                <p-column field="targetEquipment" i18n-header header="TARGET_EQUIPMENT"></p-column>
+                <p-column field="targetLan" i18n-header header="TARGET_LAN"></p-column>
+                <p-column field="targetMode" i18n-header header="TARGET_MODE"></p-column>
+                <p-column field="targetPort" i18n-header header="TARGET_PORT"></p-column>
+                <p-column field="upLinkIpAddress" i18n-header header="UP_LINK_IP_ADDRESS"></p-column>
+                <p-column field="vlanId" i18n-header header="VLAN_ID"></p-column>
+                <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+            </p-dataTable>
+        </div>
+    </div>
+    <p-dialog i18n-header header="导入" [(visible)]="uploadDisplay" modal="modal" width="600">
+        <p-fileUpload maxFileSize="1000000" i18n-chooseLabel chooseLabel="选择文件" i18n-uploadLabel uploadLabel="上传" i18n-cancelLabel cancelLabel="取消" [style]="{'width':'78%','margin':'0 auto'}" #fileUpload name="templateFile" url="{{uploadUrl}}" (onUpload)="afterUpload($event)"></p-fileUpload>
+    </p-dialog>
+</div>
+<p-growl [value]="msgs"></p-growl>

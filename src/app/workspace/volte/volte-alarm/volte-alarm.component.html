@@ -1,0 +1,21 @@
+<div class='dhss-container'>
+      <div class="ui-g-10">
+          <p-calendar [(ngModel)]="startTime" name="startTime" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <p-calendar [(ngModel)]="endTime" name="endTime" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+              <p-dropdown name="alarmDevices" [style]="{'width':'11%'}" [options]="alarmDevices" [(ngModel)]="alarmDeviceSelected" filter="filter"></p-dropdown>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button pButton type="button" class="ui-button-info" icon="fa-search" i18n-label label="查询" (click)="query()"></button>
+      </div>
+  <div class="ui-g-12">
+      <p-dataTable [value]="volteAlarmDataTable" [lazy]="false" [rows]="15" [totalRecords]="totalRecords"  [rowsPerPageOptions]="[15,20,25,30,40,50]">
+          <p-column field="alarm_title" i18n-header header="告警标题"></p-column>
+          <p-column field="alarm_content" i18n-header header="告警内容"></p-column>
+          <p-column field="belong_site" i18n-header header="设备名称"></p-column>
+          <p-column field="alarm_time" i18n-header header="告警时间"></p-column>
+          <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+      </p-dataTable>
+  </div>
+</div>

@@ -1,0 +1,183 @@
+<div class='ices-boss dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-6" >
+          <p-accordion >
+              <p-accordionTab i18n-header header="选择单元" [selected]="true">
+                <div id="aa"  class="ui-accordion-content" style="height: 400px;overflow-y:scroll;">
+                    <p-dataTable [rows]="50" [paginator]="true" [value]="unitList"  #unitDt [(selection)]="selectUnits">
+                        <p-header>
+                            <span i18n>单元列表</span>
+                        </p-header>
+                        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                        <p-column field="neType" i18n-header header="网元类型" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                <p-dropdown #neTypedr [(options)]="dropdownModel.neTypes"   [style]="{'width':'100%'}"  styleClass="ui-column-filter" (onChange)="unitDt.filter($event.value,item.field,item.filterMatchMode);changeDropdown('neType')" [(ngModel)]="neTypeParam"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="neName" i18n-header header="网元名称" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                <p-dropdown #ne [(options)]="dropdownModel.neNames"   [style]="{'width':'100%'}" filter="filter" styleClass="ui-column-filter" (onChange)="unitDt.filter($event.value,item.field,item.filterMatchMode)" ></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="unitType" i18n-header header="单元类型" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="equals">
+                            <ng-template pTemplate="filter" let-item>
+                                <p-dropdown [(options)]="dropdownModel.unitTypes"   [style]="{'width':'100%'}" filter="filter" styleClass="ui-column-filter" (onChange)="unitDt.filter($event.value,item.field,item.filterMatchMode)" ></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="unitName" i18n-header header="单元名称" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="contains"></p-column>
+                        <p-column field="serverIp" i18n-header header="IP" [filter]="true" [style]="{'overflow':'visible'}" filterMatchMode="contains"></p-column>
+                    </p-dataTable>
+                </div>
+              </p-accordionTab>
+              <p-accordionTab i18n-header header="选择指令">
+                  <div class="ui-accordion-content" style="height: 400px;overflow-y:scroll;" >
+                    <p-dataTable [value]="commandCheckItemList" [(selection)]="selectItems" [globalFilter]="gb">
+                        <p-header>
+                             <input #gb type="text" pInputText size="50" placeholder="Global Filter">
+                        </p-header>
+                        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                        <p-column field="name" i18n-header header="指令名称"></p-column>
+                        <p-column field="command" i18n-header header="指令内容"></p-column>
+                        <p-column field="applyUnit" i18n-header header="适用单元"></p-column>
+                    </p-dataTable>
+                  </div>
+              </p-accordionTab>
+          </p-accordion>
+          <div class="ui-grid-row" style="text-align:center">
+                <button pButton type="text" (click)="submitExec()" i18n-label label="提交执行" icon="fa-check"></button>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <p-accordion>
+              <p-panel i18n-header header="执行结果" >
+                  <div class="ui-panel-content" style="height: 450px">
+                    <p-dataTable [(value)]="resultList" [lazy]="true" [rows]="12" [paginator]="true"
+                                [totalRecords]="totalRecords" (onLazyLoad)="resultListLazy($event)" >
+                        <p-header >
+                            <div class="ui-datatable-header" style="text-align:left">
+                                <p-calendar [(ngModel)]="resultStartFilterDate" [showTime]="true" dateFormat="yy-mm-dd" hourFormat="24" (onSelect)="getMaintainOperationList()" [showIcon]="true"></p-calendar>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-arrow-right"></i>
+                                <p-calendar [(ngModel)]="resultEndFilterDate" [showTime]="true" dateFormat="yy-mm-dd" hourFormat="24" (onSelect)="getMaintainOperationList()" [showIcon]="true"></p-calendar>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button (click)="clearDate()" pButton type="text" i18n-label label="重置" class="ui-button-secondary" icon="fa-rotate-left"></button>
+                            </div>
+                        </p-header>
+                        <p-column field="requestTime" i18n-header header="请求时间"></p-column>
+                        <p-column field="unitCount" i18n-header header="单元数量"></p-column>
+                        <p-column field="itemCount" i18n-header header="指令数量"></p-column>
+                        <p-column field="isDone" i18n-header header="操作">
+                            <ng-template let-item="rowData" pTemplate='body'>
+                                <p-progressBar (click)="resultDisplayTrue(item)" *ngIf="!item.isDone" [style.width]="5" [value]="0"  ></p-progressBar>
+                                <div  *ngIf="item.isDone">
+                                    <button (click)="resultDisplayTrue(item)" pButton type="text" i18n-label label="完成" class="ui-button-success" icon="fa-check"></button>
+                                    <button (click)="downloadLog(item)" pButton type="text" i18n-label label="下载"  class="ui-button-info" icon="fa-download"></button>
+                                </div>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                  </div>
+              </p-panel>
+          </p-accordion>
+        </div>
+    </div>
+</div>
+<!-- 执行列表 -->
+<p-dialog i18n-header header="提交执行" [(visible)]="submitDisplay" modal="modal" width="900" responsive="true">
+  <div class="ui-dialog-content" style="height: 400px">
+    <div class="ui-g-12">
+      <p-dataTable [(value)]="submitUnitItem" [editable]="true">
+          <p-header>
+              Submit execution unit
+          </p-header>
+          <p-column field="unitName" i18n-header header="单元名称"></p-column>
+          <p-column field="checkItemName" i18n-header header="指令名称"></p-column>
+          <p-column field="command" i18n-header header="指令内容"></p-column>
+          <p-column field="params" i18n-header header="参数名称"></p-column>
+          <p-column field="defaultParam" [editable]="true" i18n-header  header="默认参数"></p-column>
+          <p-column i18n-header header="操作">
+              <ng-template let-item="rowData" pTemplate='body'>
+                  <button *ngIf="item.params" (click)="inputParamClick(item)" pButton type="text" i18n-label label="输入参数" icon="fa-edit"></button>
+              </ng-template>
+          </p-column>
+          <p-footer>
+              <span>{{submitUnitItem.length}}<span i18n>条</span></span>
+          </p-footer>
+      </p-dataTable>
+    </div>
+  </div>
+  <div class="ui-dialog-content" style="text-align: center">
+      <button pButton type="text" [disabled]="submitUnitItem.length==0" class="ui-button-danger" (click)="sendCmd()" i18n-label label="提交" icon="fa-check"></button>
+      <button pButton type="text" i18n-label label="取消" icon="fa-close" (click)="submitDisplay=false"></button>
+  </div>
+</p-dialog>
+<!-- 输入参数 -->
+<p-dialog i18n-header header="输入参数" [(visible)]="inputDisplay" modal="modal" width="500" responsive="true">
+
+  <div class="ui-dialog-content" style="text-align: center">
+      <div class="ui-grid ui-grid-responsive ui-fluid">
+        <div class="ui-grid-row" *ngFor="let item of inputItemParam" >
+            <div class="ui-g-4"><label class="custom-label">{{item.name}} : </label></div>
+            <div class="ui-g-8"><input pInputText name="itemGroup" [(ngModel)] = "item.value"  /></div>
+        </div>
+      </div>
+      <div class="ui-g-12">
+         <p-checkbox [(ngModel)]="inputCheckedAllReplace" binary="true"></p-checkbox>
+         <span i18n>是否需要将相同指令的参数值设置为该值</span>
+      </div>
+      <div class="ui-g-12">
+        <button pButton type="text" i18n-label label="设置" (click)="editParam()" icon="fa-check"></button>
+        <button pButton type="text" i18n-label label="取消" icon="fa-close" (click)="inputDisplay=false"></button>
+      </div>
+  </div>
+</p-dialog>
+<!-- 查看执行结果窗口 -->
+<p-dialog i18n-header header="执行结果" [(visible)]="resultDisplay" modal="modal" width="1250" responsive="true" >
+  <div class="ui-dialog-content" >
+      <div class="ui-g-5" >
+
+          <div class="ui-grid-row" style="height: 430px;overflow-y:scroll;">
+
+                <p-dataTable [(value)]="operationResultList" columnResizeMode="true" selectionMode="multiple" (onRowSelect)="onRowSelect($event)" [(selection)]="selectedResult">
+                        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                        <p-column [style]="{'width':'200px'}" field="unitName" i18n-header header="单元名称"></p-column>
+                        <p-column [style]="{'width':'150px'}"  field="itemName" i18n-header header="指令名称"></p-column>
+                        <p-column [style]="{'width':'50px'}" i18n-header header="状态">
+                            <ng-template let-item="rowData" pTemplate='body'>
+                                <div *ngIf="item.reportPath || item.errorLog">
+                                        <i *ngIf="item.success" class="fa fa-check" [style.color]="'green'"></i>
+                                        <i *ngIf="!item.success" class="fa fa-remove" [style.color]="'red'"></i>
+                                </div>
+                                <div *ngIf="!item.reportPath && !item.errorLog">
+                                        <i class="fa fa-ellipsis-h" ></i>
+                                </div>
+                            </ng-template>
+                        </p-column>
+                </p-dataTable>
+          </div>
+          <div class="ui-grid-row" style="text-align:right">
+                <i class="fa fa-ellipsis-h" ></i>:<label i18n>执行中</label>
+                <i class="fa fa-check" [style.color]="'green'"></i>:<label i18n>成功</label>
+                <i class="fa fa-remove" [style.color]="'red'"></i>:<label i18n>失败</label>
+          </div>
+          <div class="ui-grid-row" style="height: 30px;text-align:center">
+              <button pButton type="text" (click)="execDown()" i18n-label label="下载所选日志" icon="fa-hand-o-down"></button>
+          </div>
+      </div>
+      <div class="ui-g-7" >
+           <p-panel i18n-header header="日志"  >
+                <div *ngIf="execState" class="ui-panel-content" id="logContent" style="height: 400px;background-color:black;overflow-x:auto;overflow-y:auto; color: chartreuse;">
+                    <div >
+                        <pre id="con.name">{{logMessage}}</pre>
+                    </div>
+                </div>
+                <div *ngIf="!execState" class="ui-panel-content" id="logContent" style="height: 400px;overflow-x:auto;overflow-y:auto;">
+                    <div >
+                        <pre id="con.name">{{logMessage}}</pre>
+                    </div>
+                </div>
+           </p-panel>
+      </div>
+  </div>
+</p-dialog>
+<p-growl [value]="msgs"></p-growl>

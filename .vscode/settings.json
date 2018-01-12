@@ -1,0 +1,7 @@
+{
+    "window.openFilesInNewWindow": "default",
+    "workbench.editor.enablePreview": false,
+    "tslint.rulesDirectory": "./node_modules/codelyzer",
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.eol": "\n"
+}

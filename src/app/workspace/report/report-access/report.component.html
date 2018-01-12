@@ -1,0 +1,72 @@
+<div class='dhss-container'>
+    <div class="ui-grid-row">
+            <div class="ui-g-2">
+                <input type="text" size="25" [(ngModel)]="pageableVo.reportName" pInputText i18n-placeholder placeholder="报告关键字" />
+            </div>
+            <div class="ui-g-2">
+                <p-dropdown [options]="states" [style]="{'width':'100%'}" [(ngModel)]="pageableVo.runstat" ></p-dropdown>
+            </div>
+            <div class="ui-g-2">
+                <p-dropdown [options]="types" [style]="{'width':'100%'}" [(ngModel)]="pageableVo.runrate" ></p-dropdown>
+            </div>
+            <div class="ui-g-2">
+                <p-calendar [(ngModel)]="pageableVo.startTime" dateFormat="yy-mm-dd" [showIcon]="true"></p-calendar>
+            </div>
+            <div class="ui-g-2">
+                <p-calendar [(ngModel)]="pageableVo.endTime" dateFormat="yy-mm-dd" [showIcon]="true"></p-calendar>
+            </div>
+            <div class="ui-g-2">
+                <button pButton type="button" (click)="queryHistoryList()" icon="fa-search" i18n-label label="查询"></button>
+                <button pButton type="button" (click)="resetQueryConditions()" icon="fa-refresh" class="ui-button-secondary" i18n-label label="重置"></button>
+            </div>
+    </div>
+    <div class="ui-grid-row">
+        <p-dataTable [(value)]="dataList" [rows]="15" [paginator]="true" [lazy]="true" [totalRecords]="totalRecords" (onLazyLoad)="loadCarsLazy($event)">
+            <p-column field="createTime" i18n-header header="报告生成时间"></p-column>
+            <p-column field="name" i18n-header header="报告名称"></p-column>
+            <p-column field="taskResultInfo" i18n-header header="执行信息"></p-column>
+            <p-column i18n-header header="执行状态">
+                <ng-template pTemplate="default" let-data="rowData">
+                    {{stateLabel[data.execStatus] }}
+                    <button *ngIf="data.execStatus == '0'" pButton (click)="stopItem(data)" class="ui-button-danger" type="button" icon="fa-stop" i18n-header label="停止执行"></button>
+                </ng-template>
+            </p-column>
+            <p-column i18n-header header="操作">
+                <ng-template pTemplate="default" let-data="rowData">
+                    <button pButton type="button" icon="fa-remove" (click)="removeItem(data)" class="ui-button-warning" i18n-label label="删除"></button>
+                    <button pButton type="button" *ngIf="messageSendInterface!=null && messageSendInterface!=''" icon="fa-envelope-o" (click)="emailSend(data)" class="ui-button-danger" i18n-label label="以Email发送"></button>
+                    <button pButton type="button" icon="fa-hand-o-down" class="ui-button-success" (click)="downItem(data)" i18n-label label="下载"></button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </div>
+</div>
+<p-confirmDialog i18n-header header="确认信息" icon="fa fa-question-circle" #cd width="425">
+    <p-footer>
+        <button type="button" pButton icon="fa-check" i18n-label label="确认" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+    </p-footer>
+</p-confirmDialog>
+<p-growl [value]="msgs"></p-growl>
+<p-dialog i18n-header header="选择邮件组/人" width="700" modal="modal" [(visible)]="emailDisplay">
+    <p-dataTable [value]="groups" (onRowSelect)="onGroupSelected($event)" (onRowUnselect)="onGroupUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedGroup">
+        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
+        <p-column field="groupName" i18n-header header="邮件组"></p-column>
+        <ng-template let-car pTemplate="rowexpansion">
+            <div style="width:auto;height:100px">
+              <p-dataTable [value]="car.mailUserPos" (onRowSelect)="onUserSelected($event)" (onRowUnselect)="onUserUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedUser">
+                <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                <p-column field="userName" i18n-header header="成员"></p-column>
+                <p-column field="email" i18n-header header="邮件"></p-column>
+                <p-column field="phone" i18n-header header="手机"></p-column>
+              </p-dataTable>
+            </div>
+        </ng-template>
+    </p-dataTable>
+    <p-footer>
+        <div class="ui-grid-row" style="text-align:center">
+            <button type="button" (click)="sendMsg()" pButton icon="fa-hand-o-right" class="ui-button-danger" i18n-label label="发送"></button>
+        </div>
+    </p-footer>
+</p-dialog>

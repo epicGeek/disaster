@@ -1,0 +1,84 @@
+<div class='ices-boss dhss-container'>
+  <div class="ui-g">
+      <div class="ui-g-12">
+        <div class="ui-grid-row" *ngIf="!logDiv">
+          <div class="ui-g-1">
+          <button pButton (click)="switchsBtn()" class="ui-button-danger" icon="fa-refresh" type="button" i18n-label label="切换"></button>
+        </div>
+        <div class="ui-g-2">
+            <p-calendar [(ngModel)]="queryStartTimeForCheck" name = "queryStartTimeForCheck" [showIcon]="true" dateFormat="yy-mm-dd"  showTime="showTime" hourFormat="24"></p-calendar>
+        </div>
+        <div class="ui-g-2">
+            <p-calendar [(ngModel)]="queryEndTimeForCheck" name = "queryEndTimeForCheck" [showIcon]="true" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24"></p-calendar>
+        </div>
+        <div class="ui-g-2">
+            <input type="number" style="width:100%" pInputText i18n-placeholder placeholder="请输入imsi"  [(ngModel)]="queryImsiForCheck"/>
+        </div>
+        <div class="ui-g-3">
+            <button pButton (click)="signalingBtn()" type="button" icon="fa-search" i18n-label label="查询信令"></button>
+            <button pButton (click)="getConfig()" class="ui-button-success" type="button" icon="fa-gears" i18n-label label="配置"></button>
+        </div>
+        </div>
+      
+        <div class="ui-grid-row" *ngIf="logDiv">
+          <div class="ui-g-1">
+          <button pButton (click)="switchsBtn()" class="ui-button-danger" icon="fa-refresh" type="button" i18n-label label="切换"></button>
+        </div>
+        <div class="ui-g-2">
+            <p-calendar [(ngModel)]="queryStartTime" name = "queryStartTime" [showIcon]="true" dateFormat="yy-mm-dd"  showTime="showTime" hourFormat="24"></p-calendar>
+        </div>
+        <div class="ui-g-2">
+            <p-calendar [(ngModel)]="queryEndTime" name = "queryEndTime" [showIcon]="true" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24"></p-calendar>
+        </div>
+        <div class="ui-g-2">
+            <input type="text" style="width:100%" pInputText i18n-placeholder placeholder="请输入操作用户"  [(ngModel)]="queryUserName"/>
+        </div>
+        <div class="ui-g-2">
+            <input type="number" style="width:100%" pInputText i18n-placeholder placeholder="请输入imsi"  [(ngModel)]="queryImsi"/>
+        </div>
+        <div class="ui-g-3">
+            <button pButton (click)="getSignalingData({first: 0, rows: 15})" type="button" icon="fa-search" i18n-label label="操作日志过滤"></button>
+            <button pButton (click)="getConfig()" class="ui-button-success" type="button" icon="fa-gears" i18n-label label="配置"></button>
+        </div>
+        </div>
+    </div>
+
+      <div class="ui-g-12" >
+          <p-dataTable [(value)]="itemList" [rows]="15" [paginator]="true" [lazy]="true" (onLazyLoad)="getSignalingData($event)"
+          [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+              <p-column field="userName" i18n-header header="操作用户"></p-column>
+              <p-column field="startTime" i18n-header header="开始时间"></p-column>
+              <p-column field="endTime" i18n-header header="结束时间"></p-column>
+              <p-column field="imsi" i18n-header header="查询imsi"></p-column>
+              <p-column field="requestTime" i18n-header header="操作时间"></p-column>
+              <p-column i18n-header header="下载">
+                  <ng-template pTemplate="default" let-item="rowData" >
+                        <button pButton (click)="downLoad(item)" class="ui-button-warning"  icon="fa-download" type="button" i18n-label label="下载"></button>
+                    </ng-template>
+              </p-column>
+          </p-dataTable>
+      </div>
+  </div>
+
+  <p-dialog i18n-header header="配置" width="500" modal="modal"  [(visible)]="signalingConfigDisplay" >
+        <div class="ui-grid-row">
+            <div class="ui-g-12">
+                    <label for="input-traceback-period" i18n>最大回溯时间(小时)</label>&nbsp;&nbsp;
+                <input type="number" style="width:60%" pInputText i18n-placeholder [(ngModel)]="configEntity['tracebackPeriod']"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-12">
+                    <label for="input-download-period" i18n>文件有效时间(分钟)</label>&nbsp;&nbsp;
+                <input type="number" style="width:60%" pInputText i18n-placeholder [(ngModel)]="configEntity['downloadPeriod']"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-12" style="text-align:center">
+                <button pButton type="button" style="width:40%" class="ui-button-info" icon='fa-save' i18n-label label="保存" (click)='editConfig()'></button>
+            </div>
+        </div>
+  </p-dialog>
+ 
+
+<p-growl [value]="msgs"></p-growl>

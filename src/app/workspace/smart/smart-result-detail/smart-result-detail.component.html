@@ -1,0 +1,51 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+
+
+
+            <p-dropdown [(options)]="unitTypeList" [filter]="true" [style]="{'width':'180px'}" [(ngModel)]="selectedType" (onChange)="findResulltListPage(0)"></p-dropdown>
+
+            <p-dropdown [(options)]="unitList" [filter]="true" [style]="{'width':'180px'}" [(ngModel)]="selectedUnit" (onChange)="findResulltListPage(0)"></p-dropdown>
+
+            <p-calendar name="startDate" [(ngModel)]="startDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime" hourFormat="24" (onSelect)="findResulltListPage(0)"></p-calendar>
+            &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;
+
+            <p-calendar name="endDate" [(ngModel)]="endDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime" hourFormat="24" (onSelect)="findResulltListPage(0)"></p-calendar>
+            &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;
+
+            <input (keyup)="findResulltListPage(0)" type="text" placeholder="filter param " pInputText [(ngModel)]="paramStr" />
+
+            <button pButton (click)="export()" type="button" class="ui-button-secondary" icon='fa-external-link' i18n-label label="导出"></button>
+
+
+        </div>
+        <div class="ui-g-12" style="height: 400px">
+            <p-dataTable [(value)]="resultList" #jobDt [lazy]="true" (onLazyLoad)="loadCarsLazy($event)" [rows]="12" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+                <p-header>&nbsp;
+                    <span style="float:right">
+                  <a routerLink="/workspace/smart/result"> <i class="fa fa-backward"></i><span i18n>返回巡检结果</span></a>
+                  <a *ngIf="pageType != 'execption'" href="javascript:void(0)" (click)="backresult()"> <i class="fa fa-backward"></i><span i18n>返回上级结果</span></a>
+              </span>
+                </p-header>
+                <p-column field="checkItemName" i18n-header header="指令名称"></p-column>
+                <p-column field="neTypeName" i18n-header header="网元类型"></p-column>
+                <p-column field="neName" i18n-header header="网元名称"></p-column>
+                <p-column field="unitTypeName" i18n-header header="单元类型"></p-column>
+                <p-column field="unitName" i18n-header header="单元名称"></p-column>
+                <p-column field="startTime" i18n-header header="执行时间"></p-column>
+                <p-column i18n-header header="状态">
+                    <ng-template pTemplate='body' let-item="rowData">
+                        <span [style.color]="item.highlight">{{ item.resultCode ? 'SUCCESS' : 'EXCEPTION' }}</span>
+                    </ng-template>
+                </p-column>
+                <p-column field="errorMessage" i18n-header header="异常信息"></p-column>
+                <p-column i18n-header header="操作">
+                    <ng-template pTemplate='body' let-item="rowData">
+                        <button pButton type="button" *ngIf="item.filePath" (click)="downLoadLog(item)" class="ui-button-secondary" icon='fa-hand-o-down' i18n-label  label="下载日志"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+<div class='dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="form-inline"  #conditionForm="ngForm">
+
+                    <button pButton type="button" (click)='addNumber()'  icon="fa-plus" i18n-label label="添加"></button>
+                    <button pButton type="button" class="ui-button-success" (click)="numberGroupClick()" icon="fa-group" i18n-label label="号段分组"></button>
+                    <button pButton type="button" class="ui-button-warning" (click)="numberNeClick()" icon="fa-chain" i18n-label label="绑定网元"></button>
+                    <input type="text" pInputText [(ngModel)]="paramStr" placeholder="IMSI,NUMBER" name='paramStr' [style]="{'width':'168px'}" />
+                    <button pButton type="button" icon="fa-search" i18n-label label="查询" (click)="query()"></button>
+                    <button pButton type="button" class="ui-button-secondary" (click)="resetQuery()" icon="fa-rotate-left" i18n-label label="重置"></button>
+
+            </form>
+        </div>
+        <div class="ui-g-12">
+            <p-dataTable [value]="numberList" [rows]="20" [paginator]="true" [lazy]="true"
+              [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="getNumberData($event)" >
+                <!--<p-header>List of Cars</p-header> -->
+                <p-column field="imsi" i18n-header header="IMSI"></p-column>
+                <p-column field="msisdn" i18n-header header="MSISDN"></p-column>
+                <p-column i18n-header header="操作">
+                    <ng-template pTemplate="default" let-item="rowData">
+                        <button pButton type="button" class="ui-button-secondary"  (click)="editNumber(item)"  icon="fa-edit" i18n-label label="编辑"></button>
+                        <button pButton type="button" class="ui-button-danger" (click)="deleteNumber(item)" icon="fa-remove" i18n-label label="删除"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+<p-dialog i18n-header header="添加/编辑号段" [(visible)]="editNumberDisplay" modal="modal" width="500" height = "200" responsive="true">
+       <form [formGroup]="checkForm">
+           <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editNumberItem">
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>IMSI:</label><span style="color:red">*&nbsp;</span></div>
+                        <div class="ui-g-9">
+                            <p-spinner inputStyleClass='form-control' formControlName="imsi" size="30"></p-spinner>
+                            <!-- <input type="text" pInputText [style]="{'width':'200px'}" formControlName="imsi" i18n-placeholder placeholder="IMSI" name='imsi' />  -->
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-g-3 custom-label"><label i18n>NUMBER:</label><span style="color:red">*&nbsp;</span></div>
+                        <div class="ui-g-9">
+                             <p-spinner inputStyleClass='form-control' formControlName="msisdn" size="30"></p-spinner>
+                        </div>
+                    </div>
+           </div>
+           <p-footer>
+                <div class="ui-dialog-content" style="text-align: center">
+                    <button pButton type="button" class="ui-button-info" icon='fa-save' i18n-label label="保存" (click)='saveOrEditNumber(checkForm.value)' [disabled]="!checkForm.valid"></button>
+
+                    <!--<button pButton type="text"  class="ui-button-danger"  i18n-label label="提交" (click)='saveOrEditNumber()' [disabled]="!checkForm.valid"> icon="fa-check" ></button> -->
+                    <button pButton type="text" i18n-label label="取消" icon="fa-close" (click)="editNumberDisplay=false"></button>
+                </div>
+           </p-footer>
+        </form>
+</p-dialog>
+
+<p-dialog i18n-header header="号段分组" width="1100"  modal="modal"  [(visible)]="numberGroupDisplay" >
+      <div class="ui-grid ui-grid-responsive ui-fluid" >
+            <div class="ui-grid-row">
+                <div class="ui-g-4" style="height:415px;overflow-y:scroll;">
+                    <p-dataTable [value]="groupList" selectionMode="single" [(selection)]="selectedGroup" (onRowSelect)="groupSelect($event)">
+                        <p-column field="group_name" i18n-header header="分组名称"></p-column>
+                        <p-column field="group_desc" i18n-header header="分组描述"></p-column>
+                    </p-dataTable>
+                </div>
+                <div class="ui-g-8" style="height:415px;overflow-y:scroll;">
+                    <div class="ui-grid-row">
+                        <p-pickList [(source)]="optionalList" filterBy="imsi"  [showSourceControls]="false" [showTargetControls]="false" i18n-sourceHeader  sourceHeader="可选" i18n-targetHeader targetHeader="已选" [(target)]="selectedList" [sourceStyle]="{'width':'300px','height':'300px'}" [targetStyle]="{'width':'300px','height':'300px'}">
+                            <ng-template let-check pTemplate="item">
+                                    {{check.imsi}}&nbsp;&nbsp;&nbsp;{{check.msisdn}}
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2">
+                            <button pButton type="button" class="ui-button-info" icon='fa-save' i18n-label label="保存" (click)='saveResource()'></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+      </div>
+</p-dialog>
+
+<p-dialog i18n-header header="绑定网元" width="1100"  modal="modal"  [(visible)]="numberNeDisplay" >
+      <div class="ui-grid ui-grid-responsive ui-fluid" >
+            <div class="ui-grid-row">
+                <div class="ui-g-4" style="height:415px;overflow-y:scroll;">
+                    <p-dataTable [value]="neList" selectionMode="single" [(selection)]="selectedNe" (onRowSelect)="neSelect($event)">
+                        <p-column field="ne_name" i18n-header header="网元名称"></p-column>
+                        <p-column field="ne_type" i18n-header header="网元类型"></p-column>
+                    </p-dataTable>
+                </div>
+                <div class="ui-g-8" style="height:415px;overflow-y:scroll;">
+                    <div class="ui-grid-row">
+                        <p-pickList [(source)]="neoptionalList" filterBy="imsi"  [showSourceControls]="false" [showTargetControls]="false" i18n-sourceHeader sourceHeader="可选" i18n-targetHeader targetHeader="已选" [(target)]="neselectedList" [sourceStyle]="{'width':'300px','height':'310px'}" [targetStyle]="{'width':'260px','height':'300px'}">
+                            <ng-template let-check pTemplate="item">
+                                    {{check.imsi}}&nbsp;&nbsp;&nbsp;{{check.msisdn}}
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2"></div>
+                        <div class="ui-g-2">
+                            <button pButton type="button" class="ui-button-info" icon='fa-save' i18n-label label="保存" (click)='saveNeResource()'></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+      </div>
+</p-dialog>
+<!-- 删除确认对话框 -->
+ <p-dialog i18n-header header="删除号段" [(visible)]="deleteNumberDisplay" modal="modal" width="300" responsive="true">
+                <p>
+                    <span i18n>确认删除</span>
+                </p>
+                <p-footer>
+                    <div class="ui-dialog-buttonpane ui-widget-content">
+                        <button type="button" pButton icon="fa-check" (click)="removeNumber()" i18n-label label="确认"></button>
+                        <button type="button" pButton icon="fa-close" (click)="deleteNumberDisplay=false" i18n-label label="取消"></button>
+                    </div>
+                </p-footer>
+ </p-dialog>
+</div>
+<p-growl [value]="msgs" sticky=""></p-growl>

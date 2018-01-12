@@ -1,0 +1,45 @@
+<div class='dhss-container'>
+    <div class="ui-g-12">
+        <div class="ui-g-12">
+            <p-dropdown name="dhssNames" [style]="{'width':'11%'}" [options]="dropdownModel.dhssNames" [(ngModel)]="dhssNameSelected" filter="filter" (onChange)="dhssChangeDropdown()"></p-dropdown>
+            <p-dropdown name="physicalLocations" [style]="{'width':'11%'}" [options]="dropdownModel.physicalLocations" [(ngModel)]="physicalLocationSelected" filter="filter" (onChange)="dhssChangeDropdown()"></p-dropdown>
+            <p-dropdown name="neTypes" [style]="{'width':'11%'}" [options]="dropdownModel.neTypes" [(ngModel)]="neTypeSelected" filter="filter" (onChange)="dhssChangeDropdown()"></p-dropdown>
+            <p-dropdown name="neNames" [style]="{'width':'11%'}" [options]="dropdownModel.neNames" [(ngModel)]="neNameSelected" filter="filter" (onChange)="neChangeDropdown()"></p-dropdown>
+            <p-dropdown name="unitTypes" [style]="{'width':'11%'}" [options]="dropdownModel.unitTypes" [(ngModel)]="unitTypeSelected" filter="filter" (onChange)="neChangeDropdown()"></p-dropdown>
+            <p-dropdown name="unitNames" [style]="{'width':'11%'}" [options]="dropdownModel.unitNames" [(ngModel)]="unitNameSelected" filter="filter"></p-dropdown>
+            <p-dropdown name="kpiTypes" [style]="{'width':'11%'}" [(options)]="dropdownModel.kpiTypes" [(ngModel)]="kpiTypeSelected"  filter="filter"  (onChange) ="kpiTypeChangeDropdown()"></p-dropdown>
+            <p-dropdown name="kpiNames" [style]="{'width':'11%'}" [(options)]="dropdownModel.kpiNames" [(ngModel)]="kpiNameSelected"  filter="filter">
+                <ng-template let-item pTemplate="item">
+                    <div class="text-overflow">{{item.label}}</div>
+                </ng-template>
+            </p-dropdown>
+
+        </div>
+
+        <div class="ui-g-10">
+            <p-calendar [(ngModel)]="startDate" name="startDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+                hourFormat="24"></p-calendar>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p-calendar [(ngModel)]="endDate" name="endDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+                hourFormat="24"></p-calendar>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button pButton type="button" class="ui-button-info" icon="fa-search" i18n-label label="查询" (click)="query()"></button>
+              <button pButton type="button" class="ui-button-warning" icon="fa-rotate-left" i18n-label label="重置" (click)="reset()"></button>
+              <button pButton type="button" class="ui-button-success" icon="fa-file-excel-o" i18n-label label="导出" (click)="export()"></button>
+        </div>
+    </div>
+    <div class="ui-g-12">
+        <p-dataTable [value]="kpiMonitorHistoryDataTable" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" (onLazyLoad)="getKpiMonitorHistoryData($event)" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+            <p-column field="dhssName" i18n-header header="DHSS组"></p-column>
+            <p-column field="neName" i18n-header header="网元名称"></p-column>
+            <p-column field="unitName" i18n-header header="单元名称"></p-column>
+            <p-column field="neType" i18n-header header="网元类型"></p-column>
+            <p-column field="neSite" i18n-header header="局址"></p-column>
+            <p-column field="kpiName" i18n-header header="指标名称"></p-column>
+            <p-column field="kpiOutputValue" i18n-header header="指标值"></p-column>
+            <p-column field="kpiUnit" i18n-header header="指标单位"></p-column>
+            <p-column field="periodStartTime" i18n-header header="周期开始时间"></p-column>
+            <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+        </p-dataTable>
+    </div>
+</div>

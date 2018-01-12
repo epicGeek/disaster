@@ -1,0 +1,46 @@
+<div class="ui-grid-row">
+      <div class="ui-g-4">
+          <p-panel i18n-header header="表格列设置" >
+              <div class="ui-panel-content" style="height:450px">
+                  <div class="ui-grid-row">
+                      <label i18n>列名</label>
+                      <p-dropdown [options]="columns" [style]="{'width':'250px'}" [(ngModel)]="colmunName" filter="filter"></p-dropdown>
+                      <button pButton type="button" (click)="addItem()" icon="fa-plus" i18n-label label="添加列"></button>
+                  </div>
+                  <div class="ui-g-12" style="height:350px;overflow-y:scroll;">
+                      <div class="ui-grid-row" *ngFor="let item of columnList">
+                          {{item.label}}
+                          <i class="fa fa-fw fa-remove" (click)="removeItem(item)"></i>
+                      </div>
+                  </div>
+                  <div class="ui-g-12" style="text-align:center">
+                      <button pButton type="button" (click)="addTable()" class="ui-button-danger" icon="fa-check" i18n-label label="保存"></button>
+
+                  </div>
+              </div>
+          </p-panel>
+      </div>
+      <div class="ui-g-8">
+          <p-panel i18n-header header="表格列表" >
+              <div class="ui-panel-content" style="height:415px;overflow-y:scroll;">
+                  <p-orderList [value]="tableList" [listStyle]="{'width':'650px','height':'355px'}" i18n-header header="表格顺序">
+                        <ng-template let-table pTemplate="item">
+                            <div class="ui-grid-row">
+                                <button pButton type="button" (click)="editTable(table)" class="ui-button-secondary" icon="fa-edit" i18n-label label="编辑表格"></button>
+                                <button pButton type="button" (click)="removeTable(table)" class="ui-button-secondary" icon="fa-remove" i18n-label label="删除表格"></button>
+                            </div>
+                            <p-dataTable emptyMessage="">
+                              <p-column *ngFor="let itemData of table.data" field="itemData" [header]="itemData.label" ></p-column>
+                            </p-dataTable>
+                        </ng-template>
+                  </p-orderList>
+
+              </div>
+              <div class="ui-grid-row" style="text-align:center">
+                  <button pButton type="button" (click)="saveTableOrder()" class="ui-button-success" icon="fa-check" i18n-label label="保存表格顺序"></button>
+              </div>
+          </p-panel>
+      </div>
+</div>
+
+<p-growl [value]="msgs"></p-growl>

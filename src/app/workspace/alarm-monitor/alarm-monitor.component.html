@@ -1,0 +1,206 @@
+<div class='ices-boss dhss-container'>
+    <div class="ui-g">
+        <div class="ui-g-4" >
+            <p-tabView (onChange)="tabClick($event)">
+                <div class="ui-g-12" style="width:100%;height:480px;border: 1px solid ;border-color:#D5D5D5;">
+                <p-tabPanel i18n-header header="网络拓扑">
+                  <div class="ui-g-12" style="width:100%;height:440px">
+                    <p-tree [(value)]="treeNodes" selectionMode="single" [(selection)]="selectedNode"
+                    (onNodeSelect)="searchBtn(alarmTabView)" (onNodeExpand)="loadNode($event)" [style]="{'width':'100%','height':'420px'}" >
+                        <ng-template let-item  pTemplate="default">
+                            {{item.label}}
+                            (<span>{{item.totalCount}}</span> -
+                            <span [style.color]="item.dayCount>0 ? 'red' : ''">{{item.dayCount}}</span>)
+                            <i style="color: red" *ngIf="item.isCollection" (click)="joinOrCancelCollection($event,item)" [class]="item.isCollection" i18n-title title="收藏/取消"></i>
+                        </ng-template>
+                    </p-tree>
+                  </div>
+                  <div class="ui-grid-row">
+                      <label i18n>(全部活动告警数 - 当天活动告警数)</label>
+                      <i class="fa fa-star-o" [style.color]="'red'"></i><label i18n>可收藏</label>
+                      <i class="fa fa-star" [style.color]="'red'"></i><label i18n>已收藏</label>
+                  </div>
+                </p-tabPanel>
+                <p-tabPanel i18n-header header="查询条件" >
+                    <div class="ui-g-12" style="width:100%;height:440px;overflow-x:scroll">
+                        <div class="ui-grid-row">
+                            <div class="ui-g-3"><label i18n>起始</label></div>
+                            <div class="ui-g-9"><p-calendar placeholder=''  [(ngModel)]="userAlarm.startTime" name='execDay'  showTime="showTime" showSeconds="showSeconds" hourFormat="24" appendTo="body" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar></div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-3"><label i18n>结束</label></div>
+                            <div class="ui-g-9"><p-calendar placeholder=''  [(ngModel)]="userAlarm.endTime" name='execDay' showTime="showTime" showSeconds="showSeconds" hourFormat="24" appendTo="body" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar></div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-3"><label i18n>告警号</label></div>
+                            <div class="ui-g-9"><input id="in" type="text" size="24" pInputText [(ngModel)]="userAlarm.alarmNum" /></div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-3"><label i18n>关键字</label></div>
+                            <div class="ui-g-9"><input id="in" type="text" size="24" pInputText [(ngModel)]="userAlarm.keyword" /></div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-3"><label i18n>描述</label></div>
+                            <div class="ui-g-9">
+                                <textarea rows="6" cols="23" pInputTextarea [(ngModel)]="userAlarm.alarmDesc"></textarea>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" style = "text-align:center;" >
+                                <button pButton type="text" (click)="searchBtn(alarmTabView)" class="ui-button-primary" i18n-label label="查询" icon="fa-search"></button>
+                                <button pButton type="text"  class="ui-button-secondary" (click)="resetParam()" i18n-label label="重置" icon="fa-refresh"></button>
+                                <button pButton type="text" (click)="collectioParam()"  class="ui-button-danger" i18n-label label="收藏查询条件" icon="fa-star"></button>
+                        </div>
+
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel i18n-header header="我的收藏">
+                    <div class="ui-g-12" style="width:100%;height:440px">
+                        <p-dataTable [(value)]="userAlarmList"  [(selection)]="selectedUserAlarm">
+                            <p-header>follow</p-header>
+                            <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                            <p-column  i18n-header  header="信息">
+                                <ng-template let-item="rowData" pTemplate="default">
+                                    <a href="javascript:void(0)" (click)="searchAlarmByParam(item,alarmTabView)">{{item.cnum}}_{{item.startTime}}_{{item.endTime}}_{{item.alarmNum}}_{{item.keyword}}</a>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="alarmDesc" i18n-header  header="描述"></p-column>
+                            <p-column [style]="{'width':'80px'}" i18n-header header="取消收藏">
+                              <ng-template let-item="rowData" pTemplate="body">
+                                  <button pButton type="text" (click)="cancelParam(item)" class="ui-button-danger" i18n-label label="取消" icon="fa-star"></button>
+                              </ng-template>
+                            </p-column>
+                            <p-footer>
+                                <button pButton type="text" (click)="cancelMultiple(selectedUserAlarm)" class="ui-button-danger" i18n-label label="批量取消收藏" icon="fa-star"></button>
+                            </p-footer>
+                        </p-dataTable>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel i18n-header header="非重要告警">
+                        <div class="ui-grid-row">
+                            <div class="ui-g-2"><label i18n >告警号</label></div>
+                            <div class="ui-g-10">
+                                <input id="in" type="text" size='30' pInputText [(ngModel)]="alarmNoModel.alarmNum" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row" >
+                            <div class="ui-g-2"><label i18n class="costom-label">描述</label></div>
+                            <div class="ui-g-10">
+                                <textarea rows="3" cols="30" pInputTextarea [(ngModel)]="alarmNoModel.alarmDesc"></textarea>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row" style="text-align:center">
+                            <button pButton type="text" (click)="editAlarmNo()"  class="ui-button-warning" i18n-label  label="设置" icon="fa-save"></button>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-g-12">
+                                <p-dataTable [value]="alarmNoList" [rows]="10" [paginator]="true" selectionMode="single" [(selection)]="selectedAlarmNum" [contextMenu]="cm">
+                                    <p-column field="alarmNum" i18n-header header="告警号"></p-column>
+                                    <p-column field="createDate" i18n-header header="设置时间"></p-column>
+                                    <p-column field="createUser" i18n-header header="设置用户"></p-column>
+                                    <p-column field="alarmDesc" i18n-header header="描述"></p-column>
+                                </p-dataTable>
+                                <p-contextMenu #cm [model]="items"></p-contextMenu>
+                            </div>
+                        </div>
+
+
+                        <!--<div class="ui-g-8">
+                            <label i18n >非重要告警号</label>
+                            <span style="color: red" i18n>( 下划线 _ 分开)</span>
+                        </div>
+                        <div class="ui-g-4">
+                            <button pButton type="text" (click)="saveNotAlarmNum()"  class="ui-button-warning" i18n-label  label="保存" icon="fa-save"></button>
+                        </div>
+                        
+                        <div class="ui-g-12">
+                            <textarea rows="5" cols="45" pInputTextarea placeholder="" [(ngModel)]="nonImportantNum.alarmNoArray"></textarea>
+                        </div>-->
+
+                        
+                </p-tabPanel>
+                </div>
+            </p-tabView>
+            <!--<div class="ui-g-12"  >
+              <div *ngIf="buttonDisplay" style = "text-align:center;">
+                <button pButton type="text" (click)="searchBtn(alarmTabView)" class="ui-button-primary" i18n-label label="查询" icon="fa-search"></button>
+                <button pButton type="text"  class="ui-button-secondary" (click)="resetParam()" i18n-label label="重置" icon="fa-refresh"></button>
+                <button pButton type="text" (click)="collectioParam()"  class="ui-button-danger" i18n-label label="收藏查询条件" icon="fa-star"></button>
+              </div>
+              <div *ngIf="!buttonDisplay" style = "text-align:center;">
+                <button pButton type="text" (click)="cancelMultiple(selectedUserAlarm)" class="ui-button-danger" i18n-label label="批量取消收藏" icon="fa-star"></button>
+              </div>
+            </div>-->
+        </div>
+        <div class="ui-g-8" >
+          <p-tabView  #alarmTabView>
+              <div class="ui-g-12" >
+                <p-tabPanel *ngFor="let key of getKeys(tabMap)"   [header]="tabMap[key].header" [closable]="tabMap[key].closable" [selected]="tabMap[key].selected" >
+
+                    <p-dataTable [(selection)]="selectedAlarmModel" [contextMenu]="alarmContentMenu" selectionMode="single" [value]="tabMap[key].data" [rows]="12" [paginator]="true" [style]="{'width':'100%','height':'420px'}" [rowsPerPageOptions]="[12,20,25,30,40,50]">
+                        <p-footer><label i18n>总数</label>{{tabMap[key].data.length}}</p-footer>
+                        <p-header>
+                            <span *ngIf="tabMap[key].showDhss">
+                              <p-dropdown [style]="{'width':'150px'}" (onChange)="selectedDhss($event,tabMap[key])" [options]="tabMap[key].dhssList"></p-dropdown>
+
+                            </span>
+                            <span *ngIf="!tabMap[key].showDhss">
+                                <label i18n >网元</label>:<span> {{tabMap[key].alarmModel.cnum?.replace('_ne','')}}</span>
+                                &nbsp;&nbsp;&nbsp;
+                                <label i18n >开始时间</label>:<span> {{tabMap[key].alarmModel.startTime}}</span>&nbsp;&nbsp;&nbsp;
+                                <label i18n >结束时间</label>:<span> {{tabMap[key].alarmModel.endTime}}
+                                </span>&nbsp;&nbsp;&nbsp;
+                                <label i18n >告警号</label>:<span> {{tabMap[key].alarmModel.alarmNum}}
+                                </span>&nbsp;&nbsp;&nbsp;
+                                <label i18n >关键字</label>:<span> {{tabMap[key].alarmModel.keyword}}
+                                </span>&nbsp;&nbsp;&nbsp;
+                            </span>
+                            <button class="ui-button-secondary" (click)="getData(tabMap[key])" pButton type="button" i18n-label label="刷新"></button>
+                        </p-header>
+                        <p-column [style]="{'width':'75px'}" field="notifyId" i18n-header header="ID"></p-column>
+                        <p-column field="alarmCell" i18n-header header="告警单元"></p-column>
+                        <p-column [style]="{'width':'60px'}" field="alarmLevel" i18n-header header="等级"></p-column>
+                        <p-column [style]="{'width':'60px'}" field="alarmNo" i18n-header header="告警号"></p-column>
+                         <p-column [style]="{'width':'150px'}"  field="startTime" i18n-header  header="告警时间"></p-column>
+                        <!--<p-column [style]="{'width':'150px'}"  field="receiveStartTime" i18n-header  header="告警时间"></p-column>-->
+                        <p-column field="alarmText" i18n-header  header="告警内容"></p-column>
+                        <p-column [style]="{'width':'100px'}" i18n-header header="描述">
+                            <ng-template pTemplate="default" let-item="rowData" >
+                                <button class="ui-button-warning" (click)="alarmDesc(item)" icon="fa-hospital-o" pButton type="button" i18n-label  label="详细信息"></button>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                    <p-contextMenu #alarmContentMenu [model]="alarmContentMenuitems"></p-contextMenu>
+                </p-tabPanel>
+                </div>
+            </p-tabView>
+        </div>
+    </div>
+</div>
+<p-dialog i18n-header  header="详细信息" width="700" modal="modal" [(visible)]="alarmDescDisplay">
+    <div style="width:100%;height:400px;overflow-y:scroll">
+        <pre style="width:100%">{{alarmDescStr}}</pre>
+    </div>
+</p-dialog>
+
+<p-dialog i18n-header  header="取消告警" width="500" modal="modal" [(visible)]="cancelAlarmDisplay">
+    <div class="ui-grid-row">
+        <div class="ui-g-2"><label i18n >取消时间</label></div>
+        <div class="ui-g-10">
+            <p-calendar placeholder=''  [(ngModel)]="selectedAlarmModel.cancelTime" name='execDay' showTime="showTime" showSeconds="showSeconds" hourFormat="24" appendTo="body" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+        </div>
+    </div>
+    <div class="ui-grid-row" >
+        <div class="ui-g-2"><label i18n class="costom-label">取消原因</label></div>
+        <div class="ui-g-10">
+            <textarea rows="3" cols="40" pInputTextarea [(ngModel)]="cancelDesc"></textarea>
+        </div>
+    </div>
+    <div class="ui-grid-row" >
+        <div class="ui-g-12" style="text-align:center">
+            <button class="ui-button-info" [disabled]="!(selectedAlarmModel.cancelTime && cancelDesc)" (click)="cancelAlarm(alarmTabView)" icon="fa-save" pButton type="button" i18n-label  label="确认"></button>
+            <button class="ui-button-warning" (click)="cancelAlarmDisplay=false" icon="fa-close" pButton type="button" i18n-label  label="取消"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog i18n-header header="信息" icon="fa fa-question-circle" width="425"></p-confirmDialog>

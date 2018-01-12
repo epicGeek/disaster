@@ -1,0 +1,146 @@
+<!--TAB START-->
+<p-tabView>
+  <p-tabPanel i18n-header header="通知组管理">
+    <button pButton type="button" class="ui-button-secondary" icon="fa-plus-circle" i18n-label label="添加通知组" (click)="addNoticeGroup()"></button>
+    <p-dataTable [value]="mailGroupVos" [lazy]="false" [rows]="10" [paginator]="false" [totalRecords]="totalRecords">
+
+      <p-column field="groupName" i18n-header header="通知组名称"></p-column>
+      <p-column field="mailUserStri" i18n-header header="邮件列表"></p-column>
+      <p-column field="operation" i18n-header header="操作">
+        <ng-template let-noticeGroupManageData="rowData" pTemplate="body">
+
+          <button pButton type="button" class="ui-button-success" (click)="bindMember(noticeGroupManageData)" icon="fa-edit" i18n-label label="绑定通知组成员"></button>
+          <button pButton type="button" class="ui-button-info" (click)="editGroupManage(noticeGroupManageData)" icon="fa-edit" i18n-label label="编辑通知组成员"></button>
+          <button pButton type="button" class="ui-button-danger" (click)="deleteGroup(noticeGroupManageData)" icon="fa-minus-circle" i18n-label label="删除"></button>
+        </ng-template>
+      </p-column>
+
+    </p-dataTable>
+  </p-tabPanel>
+  <p-tabPanel i18n-header header="通知成员管理">
+    <button pButton type="button" class="ui-button-secondary" icon="fa-plus-circle" i18n-label label="添加成员" (click)="addMember()"></button>
+    <p-dataTable [value]="userDataTable" [lazy]="false" [rows]="10" [paginator]="false" [totalRecords]="totalRecords">
+
+      <p-column field="userName" i18n-header header="通知组成员名称"></p-column>
+      <p-column field="email" i18n-header header="邮件"></p-column>
+      <p-column field="phone" i18n-header header="手机"></p-column>
+      <p-column field="operation" i18n-header header="操作">
+        <ng-template let-userData="rowData" pTemplate="body">
+
+          <button pButton type="button" class="ui-button-success" (click)="bindNoticeGroup(userData)" icon="fa-edit" i18n-label label="绑定通知组"></button>
+          <button pButton type="button" class="ui-button-info" (click)="editUser(userData)" icon="fa-edit" i18n-label label="编辑通知组"></button>
+          <button pButton type="button" class="ui-button-danger" (click)="deleteUser(userData)" icon="fa-minus-circle" i18n-label label="删除"></button>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </p-tabPanel>
+  <p-tabPanel i18n-header header="邮件发送接口管理">
+    <p-panel i18n-header header="邮件发送接口管理">
+      <div class="ui-grid-row">
+        <div class="ui-g-3"><label i18n class="custom-label">邮件发送接口</label></div>
+        <div class="ui-g-9">
+          <input type="text" i18n-placeholder placeholder="请输入邮件发送接口" pInputText [(ngModel)]="messageSendInterface" size="60" />
+        </div>
+        <!--div class="ui-g-3"><label i18n class="custom-label">短信内容</label></div>
+        <div class="ui-g-9">
+          <textarea pInputTextarea [(ngModel)]="messageContent" i18n-placeholder placeholder="请输入短信内容" rows="10" cols="80"></textarea>
+        </div-->
+      </div>
+      <div class="ui-grid-row" style="text-align:center">
+          <button pButton type="button" class="ui-button-info" (click)="saveEmailSendInterface()" icon="fa-edit" i18n-label label="保存邮件发送接口"></button>
+      </div>
+    </p-panel>
+  </p-tabPanel>
+</p-tabView>
+<!--TAB END-->
+
+
+<!--各种弹窗 START-->
+<!--通知组管理弹窗 START-->
+<!--添加/编辑弹窗START-->
+<p-dialog i18n-header header="通知组设置" [(visible)]="addNoticeGroupDisplay" width="500">
+  <div class="ui-grid-row">
+    <div class="ui-g-3"><label i18n class="custom-label">通知组设置</label></div>
+    <div class="ui-g-9">
+      <input type="text" i18n-placeholder placeholder="请输入通知组名称" pInputText [(ngModel)]="noticeGroupNameInDialog" size="20" />
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="addNoticeGroupDisplay=false" i18n-label label="关闭"></button>
+      <button type="button" pButton icon="fa-check" (click)="addNoticeGroupDisplay=false" (click)="commitNewNoticeGroup()" i18n-label label="保存"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+<!--添加/编辑弹窗END-->
+<!--绑定通知成员组弹窗START-->
+<p-dialog i18n-header header="绑定成员" [(visible)]="bindMemberDisplay" width="800">
+  <p-dataTable [value]="userBindDataTable" [lazy]="false" [rows]="10" [paginator]="false" [totalRecords]="totalRecords">
+
+    <p-column field="userName" i18n-header header="用户姓名"></p-column>
+    <p-column field="email" i18n-header header="邮件"></p-column>
+    <p-column field="phone" i18n-header header="手机"></p-column>
+    <p-column field="operation" i18n-header header="操作">
+      <ng-template let-bindMemberData="rowData" pTemplate="body">
+        <button *ngIf="bindMemberData.added=='false'" pButton type="button" class="ui-button-success" (click)="bindUserToGroup(bindMemberData)" icon="fa-minus-circle" i18n-label label="绑定本组"></button>
+        <button *ngIf="bindMemberData.added=='true'" pButton type="button" class="ui-button-danger" (click)="unbindUserToGroup(bindMemberData)" icon="fa-minus-circle" i18n-label label="移除出组"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</p-dialog>
+<!--绑定通知成员组弹窗END-->
+<!--通知组管理弹窗 END-->
+<!--通知成员管理弹窗START-->
+<p-dialog i18n-header header="添加成员" [(visible)]="addMemberDisplay" width="800">
+  <div class="ui-grid-row">
+    <div class="ui-g-3"><label i18n class="custom-label">用户名</label></div>
+    <div class="ui-g-9">
+      <input type="text" i18n-placeholder placeholder="请输入用户名" pInputText [(ngModel)]="userNameInDialog" size="60" />
+    </div>
+  </div>
+  <div class="ui-grid-row">
+    <div class="ui-g-3"><label i18n class="custom-label">邮件</label></div>
+    <div class="ui-g-9">
+      <input type="text" i18n-placeholder placeholder="请输入用户邮箱" pInputText [(ngModel)]="userEmailInDialog" size="60" />
+    </div>
+  </div>
+  <div class="ui-grid-row">
+    <div class="ui-g-3"><label i18n class="custom-label">手机</label></div>
+    <div class="ui-g-9">
+      <input type="text" i18n-placeholder placeholder="请输入手机号码" pInputText [(ngModel)]="cellPhoneNumberInDialog" size="60" />
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="addMemberDisplay=false" i18n-label  label="关闭"></button>
+      <button type="button" pButton icon="fa-check" (click)="commitNewUser()" i18n-label  label="保存"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<!--绑定通知组弹窗START-->
+<p-dialog i18n-header header="绑定通知组" [(visible)]="bindGroupDisplay" width="500">
+  <p-dataTable [value]="bindMailGroupVos" [lazy]="false" [rows]="10" [paginator]="false" [totalRecords]="totalRecords">
+
+    <p-column field="groupName" i18n-header header="通知组名称"></p-column>
+    <p-column field="operation" i18n-header header="操作">
+      <ng-template let-noticeGroupInDialogDataGridTab2DataList="rowData" pTemplate="body">
+        <button *ngIf="noticeGroupInDialogDataGridTab2DataList.added=='true'" pButton type="button" class="ui-button-danger" (click)="unBindGroupToUser(noticeGroupInDialogDataGridTab2DataList)" icon="fa-minus-circle" i18n-label label="解除绑定"></button>
+        <button *ngIf="noticeGroupInDialogDataGridTab2DataList.added=='false'" pButton type="button" class="ui-button-success" (click)="bindGroupToUser(noticeGroupInDialogDataGridTab2DataList)" icon="fa-minus-circle" i18n-label label="绑定本组"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</p-dialog>
+<!--绑定通知组弹窗END-->
+<!--通知成员管理弹窗END-->
+
+
+
+<!--各种弹窗 END-->
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog i18n-header header="确认" icon="fa fa-question-circle" width="425" #cd>
+    <p-footer>
+        <button type="button" pButton icon="fa-check" i18n-label label="确认" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+    </p-footer>
+</p-confirmDialog>

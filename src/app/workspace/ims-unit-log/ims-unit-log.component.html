@@ -1,0 +1,26 @@
+<div class='dhss-container'>
+  <div class="ui-g-12">
+      <div class="ui-g-10">
+          <p-calendar [(ngModel)]="startDate" name="startDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <p-calendar [(ngModel)]="endDate" name="endDate" [showIcon]="true" dateFormat="yy-mm-dd" [locale]="en_US" showTime="showTime"
+              hourFormat="24"></p-calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+  </div>
+  <div class="ui-g-12">
+      <p-dataTable [value]="imsUnitLogData" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+          <p-column field="fileName" i18n-header header="文件名"></p-column>
+          <p-column field="unitName" i18n-header header="单元名称"></p-column>
+          <p-column field="download" i18n-header header="下载日志">
+            <ng-template let-pgwDetailData="rowData" pTemplate="body">
+                <button pButton type="button" (click)="downloadLog()" icon="fa-search" i18n-label
+                    label="下载日志"></button>
+            </ng-template>
+        </p-column>
+        
+          <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+      </p-dataTable>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="ui-g navigate">
+    <div class="ui-g-3 ui-g-nopad">
+        <div class="navigate-title">
+            <a style="cursor: pointer" (click)="menuGroupClick(null,true)">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ menuItem?.groupDisplayName }}
+            </a>
+        </div>
+    </div>
+    <div class="ui-g-9 ui-g-nopad">
+        <div id="topNavList">
+            <ul id='navList' class="nav navbar-nav">
+                <li *ngFor="let menu of brotherMenu" >
+                    <a *ngIf="menu.system != 'href'" (click)="menuGroupClick(menu,false)" style="cursor: pointer" [class]="menu.isActive" >{{menu.displayName}}</a>
+
+                    <a *ngIf="menu.system == 'href'" href="{{menu.linkAddress}}{{token}}" target="_blank" [class]="menu.isActive" >{{menu.displayName}}</a>
+                    <!--<div class="sub-nav clearfix" #subMenu [ngStyle]="setMenuStyles()">
+                        <ul class="clearfix">
+                            <li *ngFor="let item of news_menu">
+                               <a href="{{item.url}}" [style.width.px]='menuItemWidth'>{{item.name}}</a>
+                            </li>
+                        </ul>
+                    </div>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

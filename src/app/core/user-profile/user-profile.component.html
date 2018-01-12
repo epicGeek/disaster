@@ -1,0 +1,47 @@
+<div class="navbar-fixed-top">
+    <div class="ui-g">
+        <div class="ui-g-6 ui-sm-6 ui-g-nopad ">
+
+            <a routerLink=''><img i18n-src src="../../../assets/images/user_logo.png" class="logo" /></a>
+
+        </div>
+        <div class="ui-g-6 ui-sm-6 ui-g-nopad ">
+            <div class="user-info">
+                <a i18n-title title="修改密码" (click) = "editPwdDisplay=true" style="cursor: pointer" id="userInfoLink"> {{userMessage}} </a>&nbsp;&nbsp;
+<!--
+                <a i18n-title title="sendMSG" id= "sendMSG" (click) = "sendMsg('42')" ><i class="fa fa-envelope"></i></a> &nbsp;&nbsp;
+-->
+                <a i18n-title title="退出" (click)="logout()" routerLinkActive="active"><i class="fa fa-sign-out"></i></a>
+
+            </div>
+        </div>
+    </div>
+</div>
+<p-dialog i18n-header header="修改密码" [(visible)]="editPwdDisplay" modal="modal" width="400" [responsive]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-row">
+                <div class="ui-g-4"><label i18n>输入新密码</label><span style="color:red">*&nbsp;</span></div>
+                <div class="ui-g-8">
+                    <input size="30" type="password" pPassword [(ngModel)]="newPwd"  />
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-row">
+                <div class="ui-g-4"><label i18n>确认新密码</label><span style="color:red">*&nbsp;</span></div>
+                <div class="ui-g-8">
+                    <input size="30" type="password" pPassword [(ngModel)]="newPwdTemp"  />
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-g-12" style="text-align:center">
+                <!--<div class="ui-g-12">-->
+                    <button style="width:50%" pButton type="button" (click)="editPwd()" i18n-label label="保存"></button>
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</p-dialog>
+<p-growl [(value)]="msgs"></p-growl>

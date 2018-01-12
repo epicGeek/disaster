@@ -1,0 +1,132 @@
+<p-tabView (onChange)="onChange($event)" #taskTabView>
+    <p-tabPanel i18n-header header="任务列表">
+       <div class="ui-grid-row">
+            <div class="ui-g-1">
+                <label i18n>时间范围</label>
+            </div>
+            <div class="ui-g-2">
+                <p-calendar [(ngModel)]="beginTime" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" [showIcon]="true"></p-calendar>
+            </div>
+            <div class="ui-g-2">
+                <p-calendar [(ngModel)]="endTime" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" [showIcon]="true"></p-calendar>
+            </div>
+            <div class="ui-g-2">
+                <button pButton type="button" (click)="count()" icon="fa-search" i18n-label label="查询"></button>
+                <button pButton type="button" (click)="recount()" class="ui-button-secondary" icon="fa-refresh" i18n-label label="重置"></button>
+            </div>
+       </div>
+       <div class="ui-grid-row">
+            <div class="ui-g-12">
+                  <p-dataTable [(value)]="taskList" [lazy]="true" [rows]="20" [paginator]="true"
+                        [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]" (onLazyLoad)="loadTaskLazy($event)">
+                      <p-column field="taskName" i18n-header header="任务名称"></p-column>
+                      <p-column field="taskDesc" i18n-header header="任务描述"></p-column>
+                      <!--<p-column field="person" i18n-header header="创建人"></p-column>-->
+                      <p-column field="startTime" i18n-header header="任务开始时间"></p-column>
+                      <p-column field="period" i18n-header header="执行频率">
+                      <!--
+                        <ng-template pTemplate="body" let-item="rowData">
+                              {{execTypes[item.execType]}}
+                          </ng-template>
+                      -->
+                      </p-column>
+                      <p-column field="nextExecTime" i18n-header header="下次运行时间"></p-column>
+                      <p-column i18n-header header="操作">
+                            <ng-template pTemplate="default" let-item="rowData">
+                                  <button pButton type="button" (click)="editItem(item,taskTabView,cttGs,cttGsexcel,cttHs,jobRunRate)" icon="fa-edit" i18n-label label="编辑"></button>
+                                  <button pButton type="button" (click)="removeItem(item)" i18n-label class="ui-button-warning" icon="fa-remove" label="删除"></button>
+                                  <button *ngIf="item.status=='0'" (click)="status(item,true)" pButton type="button" class="ui-button-success" icon="fa-play" i18n-label label="启用"></button>
+                                  <button *ngIf="item.status=='1'" pButton type="button" (click)="status(item,false)" class="ui-button-danger" icon="fa-stop" i18n-label label="禁用"></button>
+                            </ng-template>
+                      </p-column>
+                  </p-dataTable>
+            </div>
+       </div>
+    </p-tabPanel>
+    <p-tabPanel i18n-header header="新增任务">
+        <div class="ui-grid-row" style="height:240px">
+            <div class="ui-g-6">
+                <div class="ui-grid-row">
+                    <div class="ui-g-2">
+                        <label i18n>任务开始时间</label>
+                    </div>
+                    <div class="ui-g-10">
+                        <p-calendar [(ngModel)]="taskJob.createTime" dateFormat="yy-mm-dd" showTime="showTime" hourFormat="24" [showIcon]="true" required="true"></p-calendar>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-g-2">
+                        <label i18n>任务执行频率</label>
+                    </div>
+                    <div class="ui-g-10">
+                        <p-dropdown #jobRunRate [options]="runRates" [style]="{'width':'40%'}" [(ngModel)]="taskJob.runrate"  required="true"></p-dropdown>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-g-2">
+                        <label i18n>任务描述信息</label>
+                    </div>
+                    <div class="ui-g-10">
+                        <textarea rows="5" cols="40" pInputTextarea [(ngModel)]="taskJob.description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-g-6">
+                <div class="ui-grid-row">
+                    <div class="ui-g-12">
+                        <label i18n>任务模板选择</label>
+                        <div style="width:550px;height:120px;border:1px solid #D5D5D5;overflow-y:scroll;">
+                            <div class="ui-g-12" *ngFor="let data of checkBoxData" >
+                              <p-radioButton name="group2" [value]="data.value" [label]="data.label" [(ngModel)]="taskJob.templetId"></p-radioButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-g-12">
+                         <label i18n>导出内容选择</label>
+                         <p-checkbox name="group1" #cttGs value="hasgs" i18n-label  label="全网总体概要信息" [(ngModel)]="selectedContent"></p-checkbox>
+                         <p-checkbox name="group1" #cttGsexcel value="gsexcel" i18n-label  label="全网总体详细信息" [(ngModel)]="selectedContent"></p-checkbox>
+                         <p-checkbox name="group1" #cttHs value="hashs" i18n-label  label="历史告警分类汇总" [(ngModel)]="selectedContent"></p-checkbox>
+                    </div>
+                </div>
+                <!--div class="ui-grid-row">
+                    <div class="ui-g-12">
+                         <label i18n>是否选择快照:</label>
+                         <p-checkbox name="group2" value="val1" [(ngModel)]="selectedValues" i18n-label label="是否选择快照"></p-checkbox>
+                    </div>
+                </div-->
+            </div>
+        </div>
+
+
+        <div class="ui-grid-row">
+            <p-dataTable #mailTable [value]="groups" (onRowSelect)="onGroupSelected($event)" (onRowUnselect)="onGroupUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedGroup">
+              <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+              <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
+              <p-column field="groupName" i18n-header header="邮件组"></p-column>
+              <ng-template let-car pTemplate="rowexpansion">
+                  <div style="width:auto;height:100px">
+                    <p-dataTable [value]="car.mailUserPos" (onRowSelect)="onUserSelected($event)" (onRowUnselect)="onUserUnSelected($event)" expandableRows="true" selectionMode="multiple" [(selection)]="selectedUser">
+                      <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                      <p-column field="userName" i18n-header header="成员"></p-column>
+                      <p-column field="email" i18n-header header="邮件"></p-column>
+                      <p-column field="phone" i18n-header header="手机"></p-column>
+                    </p-dataTable>
+                  </div>
+              </ng-template>
+          </p-dataTable>
+        </div>
+        <div class="ui-grid-row" style="text-align:center">
+            <button type="button" pButton icon="fa-check" (click)="editTask(taskTabView)" i18n-label label="保存" ></button>
+        </div>
+    </p-tabPanel>
+</p-tabView>
+<p-growl [value]="msgs"></p-growl>
+
+<p-confirmDialog i18n-header header="确认" icon="fa fa-question-circle" width="425" #cd>
+    <p-footer>
+        <button type="button" pButton icon="fa-check" i18n-label label="确认" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="fa-close" i18n-label label="取消" (click)="cd.reject()"></button>
+    </p-footer>
+</p-confirmDialog>

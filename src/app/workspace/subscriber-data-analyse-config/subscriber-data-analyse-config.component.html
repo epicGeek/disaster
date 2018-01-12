@@ -1,0 +1,56 @@
+<div class='dhss-container'>
+  <div class="ui-grid-row">
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <button pButton type="button" class="ui-button-info" icon="fa-arrow-up" i18n-label label="上传文件" (click)="upload()"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <p-dataTable [value]="templatesInUseArray" [lazy]="false" [rows]="5" [totalRecords]="totalRecords">
+      <p-header><span i18n>正在使用的文件</span></p-header>
+      <p-column field="templateType" i18n-header header="类型"></p-column>
+      <p-column field="uploader" i18n-header header="上传者"></p-column>
+      <p-column field="uploadTime" i18n-header header="上传时间"></p-column>
+      <!--<p-column field="comment" i18n-header header="备注"></p-column>-->
+      <p-column field="templateFilePath" i18n-header header="文件路径"></p-column>
+      <p-column field="operation" i18n-header header="操作">
+        <ng-template let-analyseTemplate="rowData" pTemplate="body">
+          <button pButton type="button" icon="fa-arrow-down" i18n-label label="下载" (click)="downloadTemplate(analyseTemplate.templateFilePath)"></button>
+          <button pButton type="button" icon="fa-info-circle" class="ui-button-danger" i18n-label label="重置" (click)="confirmResetTemplate(analyseTemplate)" ></button>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+  <div class="ui-g-12">
+    <p-dataTable [value]="uploadRecords" [lazy]="true" [rows]="15" [paginator]="true" [totalRecords]="totalRecords" [rowsPerPageOptions]="[15,20,25,30,40,50]">
+      <p-header><span i18n>未使用文件</span></p-header>
+      <p-column field="templateType" i18n-header header="类型"></p-column>
+      <p-column field="uploader" i18n-header header="上传者"></p-column>
+      <p-column field="uploadTime" i18n-header header="上传时间"></p-column>
+      <!--<p-column field="comment" i18n-header header="备注"></p-column>-->
+      <p-column field="templateFilePath" i18n-header header="文件路径"></p-column>
+      <p-column field="operation" i18n-header header="操作">
+        <ng-template let-analyseTemplate="rowData" pTemplate="body">
+          <button pButton type="button" icon="fa-arrow-down" i18n-label label="下载" (click)="downloadTemplate(analyseTemplate.templateFilePath)"></button>
+          <button pButton type="button" icon="fa-check-circle" class="ui-button-success" i18n-label label="使用" (click)="useThisTemplate(analyseTemplate)"></button>
+          <button pButton type="button" icon="fa-times-circle" class="ui-button-danger" i18n-label label="删除" (click)="confirmDelete(analyseTemplate)"></button>
+        </ng-template>
+      </p-column>
+      <p-footer><span><label i18n>总数</label> {{totalRecords}}</span></p-footer>
+    </p-dataTable>
+  </div>
+  <p-dialog i18n-header header="导入模板" [(visible)]="uploadDisplay" modal="modal" width="600" height="500">
+    <div class="ui-grid-row">
+      <div class="ui-g-2"><label i18n class="custom-label">上传文件</label></div>
+      <div class="ui-g-9">
+        <p-fileUpload maxFileSize="1000000" i18n-chooseLabel chooseLabel="选择文件" i18n-uploadLabel uploadLabel="上传" i18n-cancelLabel
+          cancelLabel="取消" [style]="{'width':'100%','margin':'0 auto'}" #fileUpload name="templateFile" url="{{uploadUrl}}" (onUpload)="onUpload($event)" >
+        </p-fileUpload>
+      </div>
+    </div>
+  </p-dialog>
+</div>
+<p-confirmDialog i18n-header header="确认删除" icon="fa fa-question-circle" width="600" ></p-confirmDialog>
+<p-growl [(value)]="msgs"></p-growl>

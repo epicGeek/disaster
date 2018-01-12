@@ -1,0 +1,45 @@
+<div class='dhss-container'>
+  <div class="ui-grid-row" style="width:80%;margin:0 auto">
+
+    <div class="ui-g-12">
+      <div class="ui-g-8">
+        <p-chips name="numberString" [(ngModel)]="numberString" (click)="showOptionMsgs()"></p-chips>
+        <p-messages [(value)]="optionMsgs"></p-messages>
+      </div>
+      <div class="ui-g-4">
+        <button pButton type="button" class="ui-button-info" icon="fa-search" i18n-label label="查询数据" (click)="query()"></button>
+        <button pButton type="button" class="ui-button-info" icon="fa-arrow-circle-down" i18n-label label="下载模板" (click)="downloadTemplate()"></button>
+        <button pButton type="button" class="ui-button-info" icon="fa-arrow-circle-o-up" i18n-label label="导入模板" (click)="showImportTemplate()"></button>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-grid-row">
+    <div class="ui-g-12">
+
+      <p-dataTable [style]="{'width':'80%','margin':'0 auto'}" [(value)]="multiQueryRecordTable" [lazy]="false" [rows]="15" [paginator]="true"
+        [globalFilter]="gb" #dt [rowsPerPageOptions]="[15,20,25,30,40,50]">
+        <p-header>
+          <input #gb type="text" pInputText size="124" placeholder="Global Filter">
+        </p-header>
+        <p-column field="createTime" i18n-header header="查询时间"></p-column>
+        <p-column field="numberSection" i18n-header header="查询号码"></p-column>
+        <p-column field="createName" i18n-header header="查询者"></p-column>
+        <p-column field="operation" i18n-header header="操作">
+          <ng-template let-multiQueryRecord="rowData" pTemplate="body">
+            <button pButton type="button" class="ui-button-info" (click)="downloadExcel(multiQueryRecord.path)" icon="fa-edit" i18n-label
+              label="下载EXCEL"></button>
+          </ng-template>
+        </p-column>
+      </p-dataTable>
+    </div>
+
+    <p-dialog i18n-header header="导入模板" [(visible)]="uploadDisplay" modal="modal" width="600">
+      <p-fileUpload maxFileSize="1000000" i18n-chooseLabel chooseLabel="选择文件" i18n-uploadLabel uploadLabel="上传" i18n-cancelLabel
+        cancelLabel="取消" [style]="{'width':'78%','margin':'0 auto'}" #fileUpload name="templateFile" url="{{uploadUrl}}" (onUpload)="afterUpload($event)"></p-fileUpload>
+    </p-dialog>
+
+  </div>
+
+  <p-growl [(value)]="msgs"></p-growl>
